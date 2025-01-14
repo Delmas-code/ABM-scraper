@@ -1,0 +1,15 @@
+{
+    "name": "Company Name",
+    "address": "Company Locaton",
+    "company_numbers": {
+        "phone": "list of phone numbers",
+        "fax": "list of fax numbers"
+    },
+    "website": "Company website",
+    "email": "The email of the company",
+    "longitude": "longitude of the company address",
+    "latitude": "latitude of the company address",
+    "description": "A description of the company",
+    "vat_regsitration": "VAT registration code of the company",
+    "registration_code": "registration code of company"
+}
