@@ -10,7 +10,8 @@ class MongoDataHandler:
                 database_name: str,
                 collection_name: str,
                 buffer_size: int = 100,
-                max_wait_time: int = 60):
+                max_wait_time: int = 60,
+                bulk_entry=False):
         """
         Initialize the data inserter.
         
@@ -32,10 +33,14 @@ class MongoDataHandler:
         self.collection_name = collection_name
         self.buffer_size = buffer_size
         self.max_wait_time = max_wait_time
+        self.bulk_entry = bulk_entry
         
         # Create buffer for documents
         self.buffer: List[Dict[str, Any]] = []
         self.last_insert_time = time.time()
+
+        if self.bulk_entry:
+            self.collection.create_index("name", unique=True)
         
         # Ensure collection exists
         if collection_name not in self.db.list_collection_names():
@@ -47,17 +52,31 @@ class MongoDataHandler:
     
     def add_document(self, document: Dict[str, Any]) -> None:
         """
-        Add a document to the buffer and insert if conditions are met.
+        Add a document to the buffer if document with same name doesnt exist and insert if conditions are met.
         
         Args:
             document: Dictionary containing the document data
         """
+
+        if 'name' not in document:
+            raise ValueError("Document must contain a 'name' field")
+        
+        # Check if document with this name exists
+        existing = self.collection.find_one({"name": document['name']}, {"_id": 1})
+        print(F"EXE: {existing}")
+        
+        if existing:
+            print(f"Document with name '{document['name']}' already exists, skipping")
+            return False
+        
         self.buffer.append(document)
         
         # Check if we should insert based on buffer size or time
         if (len(self.buffer) >= self.buffer_size or 
             time.time() - self.last_insert_time >= self.max_wait_time):
+            print("FLUSH: Flushing Buffer")
             self.flush_buffer()
+        return True
     
     def flush_buffer(self) -> None:
         """Force insert all documents currently in the buffer."""
@@ -65,19 +84,31 @@ class MongoDataHandler:
             return
             
         try:
-            self.collection.insert_many(self.buffer)
+            print("FLUSH: Flushing Buffer")
+            self.collection.insert_many(self.buffer, ordered=False)
             print(f"Inserted {len(self.buffer)} documents")
         except Exception as e:
             self.logger.error(f"Error inserting documents: {str(e)}")
+            # if isinstance(e, BulkWriteError):
+            #     # Handle duplicate key errors
+            #     successful_inserts = len(e.details['nInserted'])
+            #     print(f"Inserted {successful_inserts} documents, {len(self.buffer) - successful_inserts} duplicates skipped")
+            # else:
+            #     print(f"Error inserting documents: {str(e)}")
         
-        self.buffer = []
-        self.last_insert_time = time.time()
+        finally:
+            self.buffer = []
+            self.last_insert_time = time.time()
     
     def __del__(self):
         """Ensure remaining documents are inserted when object is destroyed."""
         self.flush_buffer()
         self.client.close()
-        self.logger.info(f"Connection to database {self.db} has been closed! ")
+        self.logger.info(f"Connection to database: {self.db} at collection: {self.collection_name} has been closed! ")
+    
+    def close_connection(self):
+        self.client.close()
+        self.logger.info(f"Connection to database: {self.db} at collection: {self.collection_name} has been closed! ")
 
     def insert_document(self, document) -> Optional[str]:
         """
@@ -97,9 +128,6 @@ class MongoDataHandler:
             self.logger.error(f"Error inserting documents: {str(e)}")
             return None
             
-        finally:
-            # Close the connection
-            self.client.close()
 
     def check_and_create_document(self, name: str) -> Optional[str]:
 
@@ -127,6 +155,3 @@ class MongoDataHandler:
             self.logger.error(f"Error in check_and_create_document: {str(e)}")
             return None
             
-        finally:
-            # Close the connection
-            self.client.close()

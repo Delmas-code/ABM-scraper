@@ -5,7 +5,7 @@ from time import sleep
 import random
 from urllib.parse import urlparse
 from bs4 import BeautifulSoup
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 import logging
 from fake_useragent import UserAgent
 from datetime import datetime, timedelta, timezone
@@ -100,7 +100,6 @@ class EntityScraper:
 class DataExtractor:
     def __init__(self, html_content, base_url, parser="html.parser"):
         self.html_soup = BeautifulSoup(html_content, parser)
-        # print(f"{self.html_soup}\n")
         self.base_url = base_url
 
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -117,18 +116,31 @@ class DataExtractor:
         try:
             section_w_cities = self.html_soup.find('section')
             content_w_cities = section_w_cities.find('div', class_="content")
-            # print(f"{content_w_cities}\n")
             links =  content_w_cities.find_all('a', href= True)
             city_data = {}
             for link in links:
                 city = link.contents[0].strip()
                 city_url = f"{self.base_url}{link['href']}"
                 city_data[city] = city_url
-            print(f"Got Cities \n")
-            
+
+            #reordeering
+            reordered_city_data = OrderedDict()
+            if "Yaounde" in city_data:
+                reordered_city_data["Yaounde"] = city_data["Yaounde"]
+            if "Douala" in city_data:
+                reordered_city_data["Douala"] = city_data["Douala"]
+            if "Buea" in city_data:
+                reordered_city_data["Buea"] = city_data["Buea"]
+            if "Kumba" in city_data:
+                reordered_city_data["Kumba"] = city_data["Kumba"]
+
+            for key, value in city_data.items():
+                if key not in ["Yaounde", "Douala", "Buea", "Kumba"]:
+                    reordered_city_data[key] = value
+
             file_path = os.path.join(self.files_dir, "cities.json")
             with open(file_path, 'w', encoding='utf-8') as f:
-                json.dump(city_data, f, indent=4)
+                json.dump(reordered_city_data, f, indent=4)
                 
             self.logger.info(f"City Data scrapped and stored successfully in cities.json!")
         except Exception as e:
@@ -158,67 +170,90 @@ class DataExtractor:
             latitude, longitude, company_site_link = "", "", ""
 
             company_info = self.html_soup.find_all("div", class_ = "info")
-            company_name = company_info[0].find("div", id="company_name").text
-            company_address = company_info[1].find("div", id="company_address").text
-            company_geo_link = company_info[1].find('a', rel="noopener", href=True )
-            if company_geo_link:
-                company_geo_link = company_geo_link["href"]
-                company_geo_link = company_geo_link.split("=")[1].split("&")[0].split(",")
-                latitude, longitude = company_geo_link[0], company_geo_link[1]
+            company_name = company_info[0].find("div", id="company_name")
+            if company_name:
+                company_name = company_name.text.strip()
 
-            contact_number_list = []
-            mobile_number_list= []
-            con_number_list = self.html_soup.find_all("div", class_="phone")
-            for number in con_number_list:
-                contact_number = number.find("a")
-                contact_number_list.append(contact_number.text.strip())
+                company_address = company_info[1].find("div", id="company_address")
+                if company_address:
+                    company_address = company_address.text
 
-            mobile_number_tag = self.html_soup.find("div", class_="phone").find_next("div", class_="info")
-            label_text = mobile_number_tag.find("div", class_="label").text.strip().lower()
-            if label_text == "mobile phone":
-                _mobile_number_list = mobile_number_tag.find_all("a")
-                _mobile_number_list = [number.text.strip() for number in _mobile_number_list]
-                mobile_number_list = _mobile_number_list
+                company_geo_link = company_info[1].find('a', rel="noopener", href=True )
+                if company_geo_link:
+                    company_geo_link = company_geo_link["href"]
+                    company_geo_link = company_geo_link.split("=")[1].split("&")[0].split(",")
+                    latitude, longitude = company_geo_link[0], company_geo_link[1]
 
-            phone_numbers = contact_number_list
-            for number in mobile_number_list:
-                phone_numbers.append(number) if number not in phone_numbers else phone_numbers
+                contact_number_list = []
+                mobile_number_list= []
+                con_number = self.html_soup.find("div", class_="phone")
+                if con_number:
+                    con_number_list = con_number.find_all("a")
+                    for number in con_number_list:
+                        contact_number_list.append(number.text.strip())
 
-            company_site_tag = self.html_soup.find("div", class_ ="weblinks")
-            if company_site_tag:
-                company_site_link = company_site_tag.find('a', rel="noopener", href=True )["href"]
-                company_site_link = company_site_link.split("=")[-1].replace("%2f", "/")
+                mobile_number_tag = self.html_soup.find("div", class_="phone")
+                if mobile_number_tag:
+                    mobile_number_tag = mobile_number_tag.find_next("div", class_="info")
+                if mobile_number_tag:
+                    label_text = mobile_number_tag.find("div", class_="label").text.strip().lower()
+                else:
+                    label_text = ""
+                if label_text == "mobile phone":
+                    _mobile_number_list = mobile_number_tag.find_all("a")
+                    _mobile_number_list = [number.text.strip() for number in _mobile_number_list]
+                    mobile_number_list = _mobile_number_list
 
-            company_description = self.html_soup.find("div", class_ ='desc').text.strip()
-            company_extra_info = self.html_soup.find("div", class_='extra_info')
-            size = ""
-            if company_extra_info:
-                company_extra_info = company_extra_info.find_all("div", class_="info")
-                for info in company_extra_info:
-                    label_text = info.find("div", class_="label").text.strip()
-                    if label_text.lower() == 'employees':
-                        size = info.contents[1].strip()
-                        break
+                phone_numbers = contact_number_list
+                for number in mobile_number_list:
+                    phone_numbers.append(number) if number not in phone_numbers else phone_numbers
 
-            company_tags = self.html_soup.find("div", class_ ="tags")
-            all_tags = []
-            if company_tags:
-                company_tags_text_list = company_tags.find_all("a")
-                for company_tag in company_tags_text_list:
-                    all_tags.append(company_tag.text)
+                company_site_tag = self.html_soup.find("div", class_ ="weblinks")
+                if company_site_tag:
+                    company_site_link = company_site_tag.find('a', rel="noopener", href=True )["href"]
+                    company_site_link = company_site_link.split("=")[-1].replace("%2f", "/").replace("%2F", "/")
 
-            company_data = {
-                "name": company_name,
-                "address": company_address,
-                "size": size,
-                "website": company_site_link,
-                "description": company_description,
-                "latitude": latitude,
-                "longitude": longitude,
-                "contact_numbers": phone_numbers,
-                "tags": all_tags
-            }
-            return company_data
+                company_description = self.html_soup.find("div", class_ ='desc')
+                if company_description:
+                    company_description = company_description.text.strip()
+                    #remove special characters
+                    chars_to_replace = ['\n', '\r', '\t', '\xa0', '\u200b']
+                    for char in chars_to_replace:
+                        company_description = company_description.replace(char, ' ')
+
+                company_extra_info = self.html_soup.find("div", class_='extra_info')
+                size = ""
+                if company_extra_info:
+                    company_extra_info = company_extra_info.find_all("div", class_="info")
+                    for info in company_extra_info:
+                        label_text = info.find("div", class_="label").text.strip()
+                        if label_text.lower() == 'employees':
+                            size = info.contents[1].strip()
+                            break
+
+                
+                company_tags = self.html_soup.find("div", class_ ="tags")
+                all_tags = []
+                if company_tags:
+                    company_tags_text_list = company_tags.find_all("a")
+                    for company_tag in company_tags_text_list:
+                        all_tags.append(company_tag.text)
+
+
+                company_data = {
+                    "name": company_name,
+                    "address": company_address if company_address else "",
+                    "size": size if size else "",
+                    "website": company_site_link if company_site_link else "",
+                    "description": company_description if company_description else "",
+                    "latitude": latitude if latitude else "",
+                    "longitude": longitude if longitude else "",
+                    "contact_numbers": phone_numbers if phone_numbers else "",
+                    "tags": all_tags if all_tags else ""
+                }
+                return company_data
+            else:
+                return None
         
         except Exception as e:
             self.logger.error(f"Error Getting Company Data: {str(e)}")
@@ -283,25 +318,28 @@ class FlowHandler:
             "country": "Cameroon",
             "city": city,
             "state": states[city] if city in states else "",
+            "address": company_data["address"],
             "latitude": company_data["latitude"],
             "longitude": company_data["longitude"],
             "created_at": datetime.now(timezone.utc)
         }
 
         location_id = self.location_inserter.insert_document(location_data)
-        industry = self.industry_maps.classify_company(company_data["tags"])
+        if company_data["tags"] == "":
+            industry = self.industry_maps.classify_company(company_data["description"], "desc")
+        else:
+            industry = self.industry_maps.classify_company(company_data["tags"], "tags")
         industry_id = self.industry_inserter.check_and_create_document(industry)
 
         updated_company_data = {
-            "name": company_data["company_name"],
-            "address": company_data["company_address"],
+            "name": company_data["name"],
             "size": company_data["size"],
             "revenue": "",
-            "website": company_data["company_site_link"],
-            "description": company_data["company_description"],
-            "contact_numbers": company_data["phone_numbers"],
+            "website": company_data["website"],
+            "description": company_data["description"],
+            "contact_numbers": company_data["contact_numbers"],
             "location_id": location_id,
-            "industr_id": industry_id,
+            "industry_id": industry_id,
             "created_at": datetime.now(timezone.utc)
         }
         return updated_company_data
@@ -313,17 +351,16 @@ class FlowHandler:
             sleep(random.uniform(1, 3))
             response = self._scraper(link)
             company_data = self._extract_company_data(response)
-            # print(f"{company_data} \n")
 
-            updated_company_data = self._organise_company_data(company_data, city, states)
-            self.company_inserter.add_document(updated_company_data)
+            if company_data:
+                updated_company_data = self._organise_company_data(company_data, city, states)
+                status = self.company_inserter.add_document(updated_company_data)
         return next_page_link
 
 
     def start_company_flow(self):
         try:
-            #TODO: change cities_test to cities
-            file_path = os.path.join(self.files_dir, "cities_test.json")
+            file_path = os.path.join(self.files_dir, "cities.json")
             with open(file_path) as f:
                 cities = json.load(f)
 
@@ -344,7 +381,7 @@ class FlowHandler:
                     while True:
                         if next_page_link:
                             sleep(random.uniform(1, 3))
-                            next_page_link = self._handle_company_flow(city_links[i], all_cities[i], states)
+                            next_page_link = self._handle_company_flow(next_page_link, all_cities[i], states)
                         else:
                             break
                     
@@ -354,6 +391,18 @@ class FlowHandler:
                         json.dump(scrapped_cities, f, indent=4)
 
                     self.logger.info(f"DONE WITH {all_cities[i]}!!")
+            
+            self.logger.info(f"DONE SCRAPPING ALL CITIES IN `cities.json`!!")
+
+            # flush buffer for any remains
+            self.company_inserter.flush_buffer()
+
+            #close all open connections
+            self.company_inserter.close_connection()
+            self.location_inserter.close_connection()
+            self.industry_inserter.close_connection()
+
+            print(f"BUFFER: {self.company_inserter.buffer}\n")
 
         except Exception as e:
             self.logger.error(f"Error Occured in Flow: {str(e)}")

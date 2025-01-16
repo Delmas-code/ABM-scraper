@@ -14,7 +14,7 @@ class IndustryClassifier:
         print(f"Current directory: {self.current_dir}")
         print(f"Files directory: {self.files_dir}")
         
-        file_path = os.path.join(self.files_dir, "industry_mapping.json")
+        file_path = os.path.join(self.files_dir, "industry_mapper.json")
         with open(file_path) as f:
             self.industry_keywords = json.load(f)
         
@@ -23,8 +23,13 @@ class IndustryClassifier:
         self.logger = logging.getLogger('IndustryClassifier')
     
     
-    def _get_possible_industries(self, company_tags: list) -> list:
-        text_to_analyze = ' '.join(map(str, company_tags))
+    def _get_possible_industries(self, map_data, checker="tags") -> list:
+        
+        if checker == "tags":
+            text_to_analyze = ' '.join(map(str, map_data))
+        elif checker == "desc":
+            text_to_analyze = str(map_data)
+
         
         # If no text to analyze, return empty list
         if not text_to_analyze:
@@ -39,11 +44,14 @@ class IndustryClassifier:
         
         return matched_industries
 
-    def _get_confidence_scores(self, company_tags: list) -> dict:
+    def _get_confidence_scores(self, map_data, checker="tags") -> dict:
         """
         Get confidence scores for each industry based on keyword matches.
         """
-        text_to_analyze = ' '.join(map(str, company_tags))
+        if checker == "tags":
+            text_to_analyze = ' '.join(map(str, map_data))
+        elif checker == "desc":
+            text_to_analyze = str(map_data)
         
         scores = {}
         total_matches = 0
@@ -62,11 +70,11 @@ class IndustryClassifier:
         
         return scores
     
-    def classify_company(self, company_tags: list) -> list:
+    def classify_company(self, map_data, checker="tags") -> list:
         try:
-            scores = self._get_confidence_scores(company_tags)
+            scores = self._get_confidence_scores(map_data, checker)
             if not scores:
-                return None
+                return "Unknown"
             return max(scores, key=scores.get)
         except Exception as e:
             self.logger.error(f"Something went wrong while classifying: {str(e)}")
