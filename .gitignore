@@ -1,3 +1,5 @@
 .env
 venv
-cities_test.json
+files/cities_test.json
+files/info.json
+files/cities.json

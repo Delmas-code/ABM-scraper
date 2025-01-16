@@ -8,8 +8,11 @@ from bs4 import BeautifulSoup
 from collections import defaultdict
 import logging
 from fake_useragent import UserAgent
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
+
+from database import MongoDataHandler
+from classifier import IndustryClassifier
 
 load_dotenv()
 
@@ -99,6 +102,12 @@ class DataExtractor:
         self.html_soup = BeautifulSoup(html_content, parser)
         # print(f"{self.html_soup}\n")
         self.base_url = base_url
+
+        self.current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.files_dir = os.path.join(self.current_dir, "files")
+        if not os.path.exists(self.files_dir):
+            self.logger.error(f"Files folder not found!")
+            raise Exception("Files folder not found!")
         
         # Configure logging
         logging.basicConfig(level=logging.INFO)
@@ -117,7 +126,8 @@ class DataExtractor:
                 city_data[city] = city_url
             print(f"Got Cities \n")
             
-            with open('cities.json', 'w', encoding='utf-8') as f:
+            file_path = os.path.join(self.files_dir, "cities.json")
+            with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(city_data, f, indent=4)
                 
             self.logger.info(f"City Data scrapped and stored successfully in cities.json!")
@@ -190,6 +200,13 @@ class DataExtractor:
                         size = info.contents[1].strip()
                         break
 
+            company_tags = self.html_soup.find("div", class_ ="tags")
+            all_tags = []
+            if company_tags:
+                company_tags_text_list = company_tags.find_all("a")
+                for company_tag in company_tags_text_list:
+                    all_tags.append(company_tag.text)
+
             company_data = {
                 "name": company_name,
                 "address": company_address,
@@ -198,7 +215,8 @@ class DataExtractor:
                 "description": company_description,
                 "latitude": latitude,
                 "longitude": longitude,
-                "contact_numbers": phone_numbers
+                "contact_numbers": phone_numbers,
+                "tags": all_tags
             }
             return company_data
         
@@ -209,9 +227,41 @@ class FlowHandler:
     def __init__(self, base_url):
         self.base_url = base_url
 
+        self.current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.files_dir = os.path.join(self.current_dir, "files")
+        if not os.path.exists(self.files_dir):
+            self.logger.error(f"Files folder not found!")
+            raise Exception("Files folder not found!")
+
         # Configure logging
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger('FlowHandler')
+
+        #configure for industry mapper
+        self.industry_maps = IndustryClassifier()
+
+        #configure connection for company bulk inserter
+        self.company_inserter = MongoDataHandler(
+            connection_string= os.environ["CONN_STRING"],
+            database_name= os.environ["DB_NAME"],
+            collection_name= os.environ["COMPANY_COLLECTION"],
+            buffer_size=100,  # Will insert after 100 documents
+            max_wait_time=300  # Or after 300 seconds, whichever comes first
+        )
+
+        #configure connection for inserting in location collection
+        self.location_inserter = MongoDataHandler(
+            connection_string= os.environ["CONN_STRING"],
+            database_name= os.environ["DB_NAME"],
+            collection_name= os.environ["LOCATION_COLLECTION"]
+        )
+
+        #configure connection for inserting in industry collection
+        self.industry_inserter = MongoDataHandler(
+            connection_string= os.environ["CONN_STRING"],
+            database_name= os.environ["DB_NAME"],
+            collection_name= os.environ["INDUSTRY_COLLECTION"]
+        )
 
     def _scraper(self, working_url):
         scraper = EntityScraper(base_delay=3, max_delay=7)
@@ -228,40 +278,79 @@ class FlowHandler:
         company_data = extractor.extract_company_data()
         return company_data
     
-    def _handle_company_flow(self, working_url, city):
+    def _organise_company_data(self, company_data, city, states):
+        location_data = {
+            "country": "Cameroon",
+            "city": city,
+            "state": states[city] if city in states else "",
+            "latitude": company_data["latitude"],
+            "longitude": company_data["longitude"],
+            "created_at": datetime.now(timezone.utc)
+        }
+
+        location_id = self.location_inserter.insert_document(location_data)
+        industry = self.industry_maps.classify_company(company_data["tags"])
+        industry_id = self.industry_inserter.check_and_create_document(industry)
+
+        updated_company_data = {
+            "name": company_data["company_name"],
+            "address": company_data["company_address"],
+            "size": company_data["size"],
+            "revenue": "",
+            "website": company_data["company_site_link"],
+            "description": company_data["company_description"],
+            "contact_numbers": company_data["phone_numbers"],
+            "location_id": location_id,
+            "industr_id": industry_id,
+            "created_at": datetime.now(timezone.utc)
+        }
+        return updated_company_data
+    
+    def _handle_company_flow(self, working_url, city, states):
         response = self._scraper(working_url)
         next_page_link, company_links = self._extract_companies(response, city)
         for link in company_links:
             sleep(random.uniform(1, 3))
             response = self._scraper(link)
             company_data = self._extract_company_data(response)
-            print(f"{company_data} \n")
+            # print(f"{company_data} \n")
+
+            updated_company_data = self._organise_company_data(company_data, city, states)
+            self.company_inserter.add_document(updated_company_data)
         return next_page_link
 
 
     def start_company_flow(self):
         try:
-            with open("cities_test.json") as f:
+            #TODO: change cities_test to cities
+            file_path = os.path.join(self.files_dir, "cities_test.json")
+            with open(file_path) as f:
                 cities = json.load(f)
+
+            file_path = os.path.join(self.files_dir, "city_state.json")
+            with open(file_path) as f:
+                states = json.load(f)
             
             city_links = list(cities.values())
             all_cities = list(cities.keys())
 
-            with open("scrapped_cities.json") as f:
+            file_path = os.path.join(self.files_dir, "scrapped_cities.json")
+            with open(file_path) as f:
                 scrapped_cities = json.load(f)
 
             for i in range(len(city_links)):
                 if all_cities[i] not in scrapped_cities:
-                    next_page_link = self._handle_company_flow(city_links[i], all_cities[i])
+                    next_page_link = self._handle_company_flow(city_links[i], all_cities[i], states)
                     while True:
                         if next_page_link:
                             sleep(random.uniform(1, 3))
-                            next_page_link = self._handle_company_flow(city_links[i], all_cities[i])
+                            next_page_link = self._handle_company_flow(city_links[i], all_cities[i], states)
                         else:
                             break
                     
                     scrapped_cities[all_cities[i]] = city_links[i]
-                    with open("scrapped_cities.json", 'w') as f:
+                    file_path = os.path.join(self.files_dir, "scrapped_cities.json")
+                    with open(file_path, 'w') as f:
                         json.dump(scrapped_cities, f, indent=4)
 
                     self.logger.info(f"DONE WITH {all_cities[i]}!!")
@@ -280,14 +369,21 @@ if __name__ == "__main__":
     cities_url = f"{base_url}/browse-business-cities"
 
     try:
-        # response = scraper.get(cities_url)
-        # print(f"Successfully scraped {cities_url}")
-        # # Process response here
-        # extractor =  DataExtractor(html_content=response.content, base_url=base_url)
-        # extractor.extract_cities()
-        # sleep(random.uniform(1, 3))  # Additional delay between pages
-        
-        handler.start_company_flow()
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        files_dir = os.path.join(current_dir, "files")
+        file_path = os.path.join(files_dir, "cities.json")
+        if not os.path.exists(file_path):
+            print(f"Cities file not found")
+            response = scraper.get(cities_url)
+            print(f"Successfully scraped {cities_url}")
+            # Process response here
+            extractor =  DataExtractor(html_content=response.content, base_url=base_url)
+            extractor.extract_cities()
+            sleep(random.uniform(1, 3))  # Additional delay between pages
+            
+            handler.start_company_flow()
+        else:
+            handler.start_company_flow()
     except Exception as e:
         print(f"Failed to scrape {cities_url}: {str(e)}")
         

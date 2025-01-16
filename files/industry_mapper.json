@@ -1,0 +1,142 @@
+{
+    "Technology": [
+        "software", "tech", "digital", "ai", "artificial intelligence", "machine learning",
+        "cloud", "internet", "cyber", "data", "analytics", "saas", "paas", "iaas",
+        "computing", "blockchain", "iot", "robotics", "semiconductor", "virtual reality",
+        "augmented reality", "quantum", "devops", "web3", "cryptocurrency", "mobile",
+        "network", "infrastructure", "database", "api", "platform", "5g", "automation",
+        "big data", "computer vision", "deep learning", "neural networks", "edge computing"
+    ],
+    
+    "Healthcare": [
+        "health", "medical", "biotech", "pharma", "healthcare", "pharmaceutical",
+        "drug", "clinical", "hospital", "therapeutic", "medicine", "wellness",
+        "diagnostic", "patient", "telehealth", "telemedicine", "dental", "orthopedic",
+        "cardiology", "oncology", "genetics", "mental health", "nursing", "surgery",
+        "pediatrics", "pharmacy", "rehabilitation", "medical devices", "biotechnology",
+        "life sciences", "healthcare it", "clinical trials", "laboratory", "immunology"
+    ],
+    
+    "Finance": [
+        "finance", "bank", "investment", "insurance", "fintech", "financial services",
+        "trading", "wealth", "capital", "asset", "financial", "credit", "loan",
+        "mortgage", "banking", "payments", "cryptocurrency", "blockchain", "lending",
+        "investment management", "private equity", "venture capital", "hedge fund",
+        "stock", "bonds", "securities", "retirement", "pension", "broker", "mutual funds",
+        "risk management", "underwriting", "reinsurance", "wealth management"
+    ],
+    
+    "Real Estate": [
+        "real estate", "property", "housing", "commercial property", "residential",
+        "leasing", "mortgage", "reit", "construction", "development", "architecture",
+        "building", "renovation", "property management", "facilities", "real estate investment",
+        "brokerage", "apartment", "condominium", "office space", "retail space",
+        "industrial property", "land development", "urban planning", "property technology"
+    ],
+    
+    "Manufacturing": [
+        "manufacturing", "industrial", "factory", "production", "assembly", "machinery",
+        "fabrication", "processing", "engineering", "automotive", "aerospace", "chemical",
+        "electronics", "textiles", "metal", "plastics", "components", "equipment",
+        "industrial automation", "quality control", "supply chain", "inventory",
+        "raw materials", "industrial equipment", "3d printing", "tooling", "packaging"
+    ],
+    
+    "Retail": [
+        "retail", "shop", "store", "ecommerce", "commerce", "consumer", "marketplace",
+        "merchandising", "shopping", "grocery", "fashion", "apparel", "luxury",
+        "department store", "supermarket", "boutique", "point of sale", "inventory",
+        "supply chain", "distribution", "wholesale", "brick and mortar", "omnichannel",
+        "direct to consumer", "retail technology", "customer experience"
+    ],
+    
+    "Education": [
+        "education", "learning", "teaching", "school", "training", "academic",
+        "university", "college", "edtech", "student", "curriculum", "e-learning",
+        "mooc", "professional development", "skills", "certification", "tutoring",
+        "educational technology", "distance learning", "online education", "k-12",
+        "higher education", "vocational", "assessment", "learning management"
+    ],
+    
+    "Media & Entertainment": [
+        "media", "entertainment", "streaming", "content", "publishing", "broadcasting",
+        "film", "television", "music", "gaming", "video games", "news", "advertising",
+        "digital media", "social media", "production", "animation", "studio",
+        "sports entertainment", "digital content", "podcasting", "virtual reality",
+        "augmented reality", "interactive media", "esports"
+    ],
+    
+    "Energy": [
+        "energy", "power", "utilities", "electricity", "renewable", "solar", "wind",
+        "hydroelectric", "nuclear", "oil", "gas", "petroleum", "clean energy",
+        "energy storage", "smart grid", "sustainability", "carbon", "climate",
+        "battery", "biofuel", "geothermal", "power generation", "energy efficiency",
+        "green energy", "alternative energy"
+    ],
+    
+    "Transportation & Logistics": [
+        "transport", "logistics", "shipping", "freight", "delivery", "supply chain",
+        "warehousing", "distribution", "fleet", "cargo", "courier", "transportation",
+        "aviation", "maritime", "railroad", "trucking", "postal", "fulfillment",
+        "last mile", "inventory management", "supply chain management", "ports",
+        "logistics technology", "autonomous vehicles"
+    ],
+    
+    "Agriculture": [
+        "agriculture", "farming", "agtech", "crop", "livestock", "food production",
+        "agricultural", "farm", "irrigation", "fertilizer", "pesticide", "seed",
+        "harvest", "precision agriculture", "agribusiness", "organic farming",
+        "sustainable agriculture", "vertical farming", "aquaculture", "horticulture",
+        "agricultural technology", "smart farming"
+    ],
+    
+    "Telecommunications": [
+        "telecommunications", "telecom", "wireless", "broadband", "network",
+        "mobile", "internet service", "cellular", "satellite", "5g", "4g",
+        "fiber optic", "voip", "data center", "infrastructure", "cloud communications",
+        "network security", "unified communications", "internet infrastructure"
+    ],
+    
+    "Construction": [
+        "construction", "building", "infrastructure", "contractor", "architecture",
+        "engineering", "civil engineering", "structural", "renovation", "development",
+        "building materials", "construction management", "project management",
+        "commercial construction", "residential construction", "heavy construction",
+        "construction technology", "sustainable construction"
+    ],
+    
+    "Professional Services": [
+        "consulting", "legal", "accounting", "audit", "advisory", "management consulting",
+        "professional services", "business services", "outsourcing", "recruitment",
+        "human resources", "marketing services", "public relations", "strategy consulting",
+        "tax services", "corporate services", "business process"
+    ],
+    
+    "Hospitality & Tourism": [
+        "hospitality", "tourism", "hotel", "restaurant", "travel", "leisure",
+        "food service", "catering", "accommodation", "vacation", "resort",
+        "tourism technology", "booking platform", "hospitality management",
+        "food and beverage", "events", "conferences", "tourism services"
+    ],
+    
+    "Environmental Services": [
+        "environmental", "waste management", "recycling", "sustainability",
+        "renewable", "clean technology", "environmental consulting", "conservation",
+        "pollution control", "water treatment", "environmental compliance",
+        "green technology", "circular economy", "environmental monitoring"
+    ],
+
+    "Defense & Aerospace": [
+        "defense", "aerospace", "military", "aviation", "space", "satellite",
+        "aircraft", "defense technology", "defense systems", "space technology",
+        "missile", "radar", "avionics", "aeronautics", "space exploration",
+        "defense contractor", "military equipment", "spacecraft"
+    ],
+
+    "Consumer Goods": [
+        "consumer goods", "fmcg", "consumer products", "packaged goods",
+        "personal care", "household products", "food products", "beverages",
+        "consumer electronics", "appliances", "cosmetics", "toiletries",
+        "consumer durables", "consumer packaging", "brand management"
+    ]
+}
