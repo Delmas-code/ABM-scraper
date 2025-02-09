@@ -444,6 +444,7 @@ def google_runner(scraper):
     handler = BLFlowHandler(base_url=base_url)
 
     try:
+        print("In try")
         current_dir = os.path.dirname(os.path.abspath(__file__))
         files_dir = os.path.join(current_dir, "files")
         file_path = os.path.join(files_dir, "cities.json")
@@ -469,14 +470,16 @@ def google_runner(scraper):
             all_cities = list(cities.keys())
             for city in all_cities:
                 query = f"companies in {city}"
-                companies = initiator(query)
+                companies = initiator(query, city)
                 if len(companies)>0:
                     for company in companies:
                         updated_company_data = handler._organise_company_data(company, city, states)
                         status = handler.company_inserter.add_document(updated_company_data)
+                        
                 sleep(3)
                 
         else:
+            print("Cities file found")
             with open(file_path) as f:
                 cities = json.load(f)
             
@@ -486,7 +489,7 @@ def google_runner(scraper):
             all_cities = list(cities.keys())
             for city in all_cities:
                 query = f"companies in {city}"
-                companies = initiator(query)
+                companies = initiator(query, city)
                 if len(companies)>0:
                     for company in companies:
                         updated_company_data = handler._organise_company_data(company, city, states)
@@ -502,7 +505,8 @@ def google_runner(scraper):
         handler.industry_inserter.close_connection()
 
     except Exception as e:
-        pass
+        print(e)
+        # pass
 
 if __name__ == "__main__":
     try:
