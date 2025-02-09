@@ -5,7 +5,28 @@
         "computing", "blockchain", "iot", "robotics", "semiconductor", "virtual reality",
         "augmented reality", "quantum", "devops", "web3", "cryptocurrency", "mobile",
         "network", "infrastructure", "database", "api", "platform", "5g", "automation",
-        "big data", "computer vision", "deep learning", "neural networks", "edge computing"
+        "big data", "computer vision", "deep learning", "neural networks", "edge computing",
+        "web hosting", "domain registration", "cybersecurity", "IT services", "software development", 
+        "app development", "IT consulting", "tech support", "network security", "data storage", "cloud computing", 
+        "virtualization", "IT infrastructure", "tech startups", "tech innovation", "tech solutions", "tech consulting", 
+        "tech integration", "tech outsourcing", "tech maintenance", "tech training", "tech research", "tech patents", 
+        "tech licensing", "tech partnerships", "tech ecosystems", "tech hubs", "tech accelerators", "tech incubators", 
+        "tech funding", "tech investments", "hébergement web", "enregistrement de domaine", "cybersécurité",
+        "services informatiques", "développement de logiciels", "développement d'applications", 
+        "conseil en informatique", "support technique", "sécurité réseau", "stockage de données", "cloud computing",
+        "virtualisation", "infrastructure informatique", "startups technologiques", "innovation technologique",
+        "solutions technologiques", "conseil en technologie", "intégration technologique", 
+        "externalisation technologique", "maintenance technologique", "formation technologique", 
+        "recherche technologique", "brevets technologiques", "licences technologiques", "partenariats technologiques", 
+        "écosystèmes technologiques", "hubs technologiques", "accélérateurs technologiques", "incubateurs technologiques", 
+        "financement technologique", "investissements technologiques",
+        "AI platforms", "machine learning models", "natural language processing", "computer vision", 
+        "AI ethics", "AI governance", "AI research", "AI development", "AI consulting", "AI tools", "AI software", 
+        "AI analytics", "AI innovation", "AI ecosystems", "AI hubs", "AI accelerators", "AI incubators", "AI funding", 
+        "AI investments", "plateformes d'IA", "modèles d'apprentissage automatique", "traitement du langage naturel", 
+        "vision par ordinateur", "éthique de l'IA", "gouvernance de l'IA", "recherche en IA", "développement de l'IA", 
+        "conseil en IA", "outils d'IA", "logiciels d'IA", "analyse de l'IA", "innovation en IA", "écosystèmes de l'IA", 
+        "hubs de l'IA", "accélérateurs de l'IA", "incubateurs de l'IA", "financement de l'IA", "investissements dans l'IA"
     ],
     
     "Healthcare": [
@@ -14,7 +35,17 @@
         "diagnostic", "patient", "telehealth", "telemedicine", "dental", "orthopedic",
         "cardiology", "oncology", "genetics", "mental health", "nursing", "surgery",
         "pediatrics", "pharmacy", "rehabilitation", "medical devices", "biotechnology",
-        "life sciences", "healthcare it", "clinical trials", "laboratory", "immunology"
+        "life sciences", "healthcare it", "clinical trials", "laboratory", "immunology",
+        "telemedicine platforms", "medical research", "health diagnostics", "medical imaging", 
+        "health monitoring", "health apps", "medical software", "health data", "health analytics", 
+        "health informatics", "health insurance", "medical training", "health education", "health advocacy", 
+        "health policy", "health regulation", "health compliance", "health startups", "health innovation", 
+        "health funding", "health investments", "plateformes de télémédecine", "recherche médicale", 
+        "diagnostics de santé", "imagerie médicale", "surveillance de la santé", "applications de santé", 
+        "logiciels médicaux", "données de santé", "analyse de santé", "informatique de santé", "assurance santé", 
+        "formation médicale", "éducation à la santé", "plaidoyer pour la santé", "politique de santé", 
+        "réglementation de santé", "conformité en santé", "startups de santé", "innovation en santé", 
+        "financement de la santé", "investissements dans la santé"
     ],
     
     "Finance": [
@@ -23,7 +54,15 @@
         "mortgage", "banking", "payments", "cryptocurrency", "blockchain", "lending",
         "investment management", "private equity", "venture capital", "hedge fund",
         "stock", "bonds", "securities", "retirement", "pension", "broker", "mutual funds",
-        "risk management", "underwriting", "reinsurance", "wealth management"
+        "risk management", "underwriting", "reinsurance", "wealth management",
+        "financial planning", "financial analysis", "financial consulting", "financial software", 
+        "financial tools", "financial education", "financial literacy", "financial regulation", 
+        "financial compliance", "financial startups", "financial innovation", "financial ecosystems", 
+        "financial hubs", "financial accelerators", "financial incubators", "financial funding", "financial investments",
+        "planification financière", "analyse financière", "conseil financier", "logiciels financiers", "outils financiers", 
+        "éducation financière", "littératie financière", "réglementation financière", "conformité financière", 
+        "startups financières", "innovation financière", "écosystèmes financiers", "hubs financiers", 
+        "accélérateurs financiers", "incubateurs financiers", "financement financier", "investissements financiers"
     ],
     
     "Real Estate": [
@@ -31,7 +70,15 @@
         "leasing", "mortgage", "reit", "construction", "development", "architecture",
         "building", "renovation", "property management", "facilities", "real estate investment",
         "brokerage", "apartment", "condominium", "office space", "retail space",
-        "industrial property", "land development", "urban planning", "property technology"
+        "industrial property", "land development", "urban planning", "property technology",
+        "property development", "real estate marketing", "real estate technology", "real estate analytics", 
+        "real estate software", "real estate tools", "real estate education", "real estate regulation", 
+        "real estate compliance", "real estate startups", "real estate innovation", "real estate ecosystems", 
+        "real estate hubs", "real estate accelerators", "real estate incubators", "real estate funding", "real estate investments",
+        "développement immobilier", "marketing immobilier", "technologie immobilière", "analyse immobilière", 
+        "logiciels immobiliers", "outils immobiliers", "éducation immobilière", "réglementation immobilière", 
+        "conformité immobilière", "startups immobilières", "innovation immobilière", "écosystèmes immobiliers", 
+        "hubs immobiliers", "accélérateurs immobiliers", "incubateurs immobiliers", "financement immobilier", "investissements immobiliers"
     ],
     
     "Manufacturing": [
@@ -39,7 +86,13 @@
         "fabrication", "processing", "engineering", "automotive", "aerospace", "chemical",
         "electronics", "textiles", "metal", "plastics", "components", "equipment",
         "industrial automation", "quality control", "supply chain", "inventory",
-        "raw materials", "industrial equipment", "3d printing", "tooling", "packaging"
+        "raw materials", "industrial equipment", "3d printing", "tooling", "packaging",
+        "industrial automation", "manufacturing software", "manufacturing tools", 
+        "manufacturing analytics", "manufacturing innovation", "manufacturing ecosystems", "manufacturing hubs", 
+        "manufacturing accelerators", "manufacturing incubators", "manufacturing funding", "manufacturing investments",
+        "automatisation industrielle", "logiciels de fabrication", "outils de fabrication", "analyse de fabrication", 
+        "innovation de fabrication", "écosystèmes de fabrication", "hubs de fabrication", 
+        "accélérateurs de fabrication", "incubateurs de fabrication", "financement de la fabrication", "investissements dans la fabrication"
     ],
     
     "Retail": [
@@ -47,7 +100,14 @@
         "merchandising", "shopping", "grocery", "fashion", "apparel", "luxury",
         "department store", "supermarket", "boutique", "point of sale", "inventory",
         "supply chain", "distribution", "wholesale", "brick and mortar", "omnichannel",
-        "direct to consumer", "retail technology", "customer experience"
+        "direct to consumer", "retail technology", "customer experience",
+        "retail technology", "retail analytics", "retail software", "retail tools", 
+        "retail innovation", "retail ecosystems", "retail hubs", "retail accelerators", 
+        "retail incubators", "retail funding", "retail investments",
+        "technologie de vente au détail", "analyse de vente au détail", "logiciels de vente au détail", 
+        "outils de vente au détail", "innovation de vente au détail", "écosystèmes de vente au détail", 
+        "hubs de vente au détail", "accélérateurs de vente au détail", "incubateurs de vente au détail", 
+        "financement de la vente au détail", "investissements dans la vente au détail"
     ],
     
     "Education": [
@@ -55,7 +115,13 @@
         "university", "college", "edtech", "student", "curriculum", "e-learning",
         "mooc", "professional development", "skills", "certification", "tutoring",
         "educational technology", "distance learning", "online education", "k-12",
-        "higher education", "vocational", "assessment", "learning management"
+        "higher education", "vocational", "assessment", "learning management",
+        "educational technology", "educational software", "educational tools", 
+        "educational analytics", "educational innovation", "educational ecosystems", "educational hubs", 
+        "educational accelerators", "educational incubators", "educational funding", "educational investments",
+        "technologie éducative", "logiciels éducatifs", "outils éducatifs", "analyse éducative", 
+        "innovation éducative", "écosystèmes éducatifs", "hubs éducatifs", "accélérateurs éducatifs", 
+        "incubateurs éducatifs", "financement de l'éducation", "investissements dans l'éducation"
     ],
     
     "Media & Entertainment": [
@@ -63,7 +129,12 @@
         "film", "television", "music", "gaming", "video games", "news", "advertising",
         "digital media", "social media", "production", "animation", "studio",
         "sports entertainment", "digital content", "podcasting", "virtual reality",
-        "augmented reality", "interactive media", "esports"
+        "augmented reality", "interactive media", "esports",
+        "media technology", "media software", "media tools", "media analytics", "media innovation", 
+        "media ecosystems", "media hubs", "media accelerators", "media incubators", "media funding", "media investments",
+        "technologie des médias", "logiciels de médias", "outils de médias", "analyse des médias", 
+        "innovation des médias", "écosystèmes des médias", "hubs des médias", "accélérateurs des médias", 
+        "incubateurs des médias", "financement des médias", "investissements dans les médias"
     ],
     
     "Energy": [
@@ -71,7 +142,12 @@
         "hydroelectric", "nuclear", "oil", "gas", "petroleum", "clean energy",
         "energy storage", "smart grid", "sustainability", "carbon", "climate",
         "battery", "biofuel", "geothermal", "power generation", "energy efficiency",
-        "green energy", "alternative energy"
+        "green energy", "alternative energy",
+        "energy technology", "energy software", "energy tools", "energy analytics", 
+        "energy innovation", "energy ecosystems", "energy hubs", "energy accelerators", "energy incubators", 
+        "energy funding", "energy investments", "technologie de l'énergie", "logiciels de l'énergie", "outils de l'énergie", 
+        "analyse de l'énergie", "innovation de l'énergie", "écosystèmes de l'énergie", "hubs de l'énergie", 
+        "accélérateurs de l'énergie", "incubateurs de l'énergie", "financement de l'énergie", "investissements dans l'énergie"
     ],
     
     "Transportation & Logistics": [
@@ -79,7 +155,13 @@
         "warehousing", "distribution", "fleet", "cargo", "courier", "transportation",
         "aviation", "maritime", "railroad", "trucking", "postal", "fulfillment",
         "last mile", "inventory management", "supply chain management", "ports",
-        "logistics technology", "autonomous vehicles"
+        "logistics technology", "autonomous vehicles", "transportation technology", "logistics software", 
+        "logistics tools", "logistics analytics", "logistics innovation", "logistics ecosystems", "logistics hubs", 
+        "logistics accelerators", "logistics incubators", "logistics funding", "logistics investments",
+        "technologie des transports", "logiciels de logistique", "outils de logistique", 
+        "analyse de la logistique", "innovation de la logistique", "écosystèmes de la logistique", 
+        "hubs de la logistique", "accélérateurs de la logistique", "incubateurs de la logistique", 
+        "financement de la logistique", "investissements dans la logistique"
     ],
     
     "Agriculture": [
@@ -87,14 +169,29 @@
         "agricultural", "farm", "irrigation", "fertilizer", "pesticide", "seed",
         "harvest", "precision agriculture", "agribusiness", "organic farming",
         "sustainable agriculture", "vertical farming", "aquaculture", "horticulture",
-        "agricultural technology", "smart farming"
+        "agricultural technology", "smart farming",
+        "agricultural technology", "agricultural software", "agricultural tools", 
+        "agricultural analytics", "agricultural innovation", "agricultural ecosystems", 
+        "agricultural hubs", "agricultural accelerators", "agricultural incubators", "agricultural funding", 
+        "agricultural investments", "technologie agricole", "logiciels agricoles", "outils agricoles", 
+        "analyse agricole", "innovation agricole", "écosystèmes agricoles", "hubs agricoles", 
+        "accélérateurs agricoles", "incubateurs agricoles", "financement de l'agriculture", 
+        "investissements dans l'agriculture"
     ],
     
     "Telecommunications": [
         "telecommunications", "telecom", "wireless", "broadband", "network",
         "mobile", "internet service", "cellular", "satellite", "5g", "4g",
         "fiber optic", "voip", "data center", "infrastructure", "cloud communications",
-        "network security", "unified communications", "internet infrastructure", "communications", "Tele"
+        "network security", "unified communications", "internet infrastructure", "communications", "Tele",
+        "telecommunications technology", "telecommunications software", "telecommunications tools", 
+        "telecommunications analytics", "telecommunications innovation", 
+        "telecommunications ecosystems", "telecommunications hubs", "telecommunications accelerators", 
+        "telecommunications incubators", "telecommunications funding", "telecommunications investments", 
+        "technologie des télécommunications", "logiciels de télécommunications", "outils de télécommunications", 
+        "analyse des télécommunications", "innovation des télécommunications", "écosystèmes des télécommunications", 
+        "hubs des télécommunications", "accélérateurs des télécommunications", "incubateurs des télécommunications", 
+        "financement des télécommunications", "investissements dans les télécommunications"
     ],
     
     "Construction": [
@@ -102,41 +199,105 @@
         "engineering", "civil engineering", "structural", "renovation", "development",
         "building materials", "construction management", "project management",
         "commercial construction", "residential construction", "heavy construction",
-        "construction technology", "sustainable construction"
+        "construction technology", "sustainable construction",
+        "construction technology", "construction software", "construction tools", "construction analytics", 
+        "construction innovation", "construction ecosystems", "construction hubs", "construction accelerators", 
+        "construction incubators", "construction funding", "construction investments", 
+        "technologie de la construction", "logiciels de construction", "outils de construction", 
+        "analyse de la construction", "innovation de la construction", "écosystèmes de la construction", 
+        "hubs de la construction", "accélérateurs de la construction", "incubateurs de la construction", 
+        "financement de la construction", "investissements dans la construction"
     ],
     
     "Professional Services": [
         "consulting", "legal", "accounting", "audit", "advisory", "management consulting",
         "professional services", "business services", "outsourcing", "recruitment",
         "human resources", "marketing services", "public relations", "strategy consulting",
-        "tax services", "corporate services", "business process"
+        "tax services", "corporate services", "business process",
+        "professional services technology", "professional services software", 
+        "professional services tools", "professional services analytics", "professional services innovation", 
+        "professional services ecosystems", "professional services hubs", "professional services accelerators", 
+        "professional services incubators", "professional services funding", "professional services investments", 
+        "technologie des services professionnels", "logiciels des services professionnels", 
+        "outils des services professionnels", "analyse des services professionnels", 
+        "innovation des services professionnels", "écosystèmes des services professionnels", 
+        "hubs des services professionnels", "accélérateurs des services professionnels", 
+        "incubateurs des services professionnels", "financement des services professionnels", 
+        "investissements dans les services professionnels"
     ],
     
     "Hospitality & Tourism": [
         "hospitality", "tourism", "hotel", "restaurant", "travel", "leisure",
         "food service", "catering", "accommodation", "vacation", "resort",
         "tourism technology", "booking platform", "hospitality management",
-        "food and beverage", "events", "conferences", "tourism services"
+        "food and beverage", "events", "conferences", "tourism services",
+        "hospitality technology", "tourism software", "tourism tools", 
+        "tourism analytics", "tourism innovation", "tourism ecosystems", 
+        "tourism hubs", "tourism accelerators", "tourism incubators", 
+        "tourism funding", "tourism investments", "technologie de l'hôtellerie", 
+        "logiciels de tourisme", "outils de tourisme", "analyse du tourisme", 
+        "innovation du tourisme", "écosystèmes du tourisme", "hubs du tourisme", 
+        "accélérateurs du tourisme", "incubateurs du tourisme", "financement du tourisme", 
+        "investissements dans le tourisme"
     ],
     
     "Environmental Services": [
         "environmental", "waste management", "recycling", "sustainability",
         "renewable", "clean technology", "environmental consulting", "conservation",
         "pollution control", "water treatment", "environmental compliance",
-        "green technology", "circular economy", "environmental monitoring"
+        "green technology", "circular economy", "environmental monitoring",
+        "environmental technology", "environmental software", "environmental tools", 
+        "environmental analytics", "environmental innovation", "environmental ecosystems", 
+        "environmental hubs", "environmental accelerators", "environmental incubators", 
+        "environmental funding", "environmental investments", "technologie environnementale", 
+        "logiciels environnementaux", "outils environnementaux", "analyse environnementale", 
+        "innovation environnementale", "écosystèmes environnementaux", "hubs environnementaux", 
+        "accélérateurs environnementaux", "incubateurs environnementaux", "financement environnemental", 
+        "investissements environnementaux"
     ],
 
     "Defense & Aerospace": [
         "defense", "aerospace", "military", "aviation", "space", "satellite",
         "aircraft", "defense technology", "defense systems", "space technology",
         "missile", "radar", "avionics", "aeronautics", "space exploration",
-        "defense contractor", "military equipment", "spacecraft"
+        "defense contractor", "military equipment", "spacecraft",
+        "defense technology", "aerospace software", "aerospace tools", 
+        "aerospace analytics", "aerospace innovation", "aerospace ecosystems", 
+        "aerospace hubs", "aerospace accelerators", "aerospace incubators", 
+        "aerospace funding", "aerospace investments", "technologie de défense", 
+        "logiciels aérospatiaux", "outils aérospatiaux", "analyse aérospatiale", 
+        "innovation aérospatiale", "écosystèmes aérospatiaux", "hubs aérospatiaux", 
+        "accélérateurs aérospatiaux", "incubateurs aérospatiaux", "financement aérospatial", 
+        "investissements aérospatiaux"
     ],
 
     "Consumer Goods": [
         "consumer goods", "fmcg", "consumer products", "packaged goods",
         "personal care", "household products", "food products", "beverages",
         "consumer electronics", "appliances", "cosmetics", "toiletries",
-        "consumer durables", "consumer packaging", "brand management"
+        "consumer durables", "consumer packaging", "brand management",
+        "consumer goods technology", "consumer goods software", "consumer goods tools", 
+        "consumer goods analytics", "consumer goods innovation", "consumer goods ecosystems", 
+        "consumer goods hubs", "consumer goods accelerators", "consumer goods incubators", 
+        "consumer goods funding", "consumer goods investments", "technologie des biens de consommation", 
+        "logiciels des biens de consommation", "outils des biens de consommation", 
+        "analyse des biens de consommation", "innovation des biens de consommation", 
+        "écosystèmes des biens de consommation", "hubs des biens de consommation", 
+        "accélérateurs des biens de consommation", "incubateurs des biens de consommation", 
+        "financement des biens de consommation", "investissements dans les biens de consommation"
+    ],
+
+    "E-commerce": [
+        "e-commerce platforms", "online marketplaces", "digital storefronts", "payment gateways", 
+        "shopping carts", "order fulfillment", "dropshipping", "subscription services", "digital marketing", 
+        "customer retention", "e-commerce analytics", "e-commerce tools", "e-commerce software", 
+        "e-commerce innovation", "e-commerce ecosystems", "e-commerce hubs", "e-commerce accelerators", 
+        "e-commerce incubators", "e-commerce funding", "e-commerce investments", 
+        "plateformes de commerce électronique", "places de marché en ligne", "vitrines numériques", 
+        "passerelles de paiement", "paniers d'achat", "traitement des commandes", "dropshipping", 
+        "services d'abonnement", "marketing numérique", "fidélisation de la clientèle", 
+        "analyse du commerce électronique", "outils de commerce électronique", "logiciels de commerce électronique", 
+        "innovation du commerce électronique", "écosystèmes du commerce électronique", "hubs du commerce électronique", 
+        "accélérateurs du commerce électronique", "incubateurs du commerce électronique", "financement du commerce électronique", "investissements dans le commerce électronique"
     ]
 }

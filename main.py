@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 from database import MongoDataHandler
 from classifier import IndustryClassifier
 
+from google_handler import initiator
+
 load_dotenv()
 
 class EntityScraper:
@@ -97,7 +99,7 @@ class EntityScraper:
     #     }
     #     return self.get(url, proxies=proxies)
 
-class DataExtractor:
+class BLDataExtractor:
     def __init__(self, html_content, base_url, parser="html.parser"):
         self.html_soup = BeautifulSoup(html_content, parser)
         self.base_url = base_url
@@ -110,7 +112,7 @@ class DataExtractor:
         
         # Configure logging
         logging.basicConfig(level=logging.INFO)
-        self.logger = logging.getLogger('DataExtractor')
+        self.logger = logging.getLogger('BLDataExtractor')
         
     def extract_cities(self):
         try:
@@ -158,7 +160,7 @@ class DataExtractor:
 
             next_page_scroller = self.html_soup.find("div", class_ = "scroller_with_ul")
             next_page_link = next_page_scroller.find('a', rel="next", href=True)
-            next_page_link = f"{base_url}{next_page_link['href']}" if next_page_link else None
+            next_page_link = f"{self.base_url}{next_page_link['href']}" if next_page_link else None
 
             return next_page_link, company_links
         
@@ -258,7 +260,7 @@ class DataExtractor:
         except Exception as e:
             self.logger.error(f"Error Getting Company Data: {str(e)}")
             
-class FlowHandler:
+class BLFlowHandler:
     def __init__(self, base_url):
         self.base_url = base_url
 
@@ -270,7 +272,7 @@ class FlowHandler:
 
         # Configure logging
         logging.basicConfig(level=logging.INFO)
-        self.logger = logging.getLogger('FlowHandler')
+        self.logger = logging.getLogger('BLFlowHandler')
 
         #configure for industry mapper
         self.industry_maps = IndustryClassifier()
@@ -304,12 +306,12 @@ class FlowHandler:
         return response
     
     def _extract_companies(self, response, city):
-        extractor =  DataExtractor(html_content=response.content, base_url=self.base_url)
+        extractor =  BLDataExtractor(html_content=response.content, base_url=self.base_url)
         next_page_link, company_links = extractor.extract_companies(city)
         return next_page_link, company_links
     
     def _extract_company_data(self, response):
-        extractor =  DataExtractor(html_content=response.content, base_url=self.base_url)
+        extractor =  BLDataExtractor(html_content=response.content, base_url=self.base_url)
         company_data = extractor.extract_company_data()
         return company_data
     
@@ -409,12 +411,9 @@ class FlowHandler:
 
 
 
-
-if __name__ == "__main__":
-
-    scraper = EntityScraper(base_delay=3, max_delay=7)
-    base_url = os.environ["BASE_URL"]
-    handler = FlowHandler(base_url=base_url)
+def  bl_runner(scraper):
+    base_url = os.environ["BL_BASE_URL"]
+    handler = BLFlowHandler(base_url=base_url)
     cities_url = f"{base_url}/browse-business-cities"
 
     try:
@@ -426,13 +425,91 @@ if __name__ == "__main__":
             response = scraper.get(cities_url)
             print(f"Successfully scraped {cities_url}")
             # Process response here
-            extractor =  DataExtractor(html_content=response.content, base_url=base_url)
+            extractor =  BLDataExtractor(html_content=response.content, base_url=base_url)
             extractor.extract_cities()
             sleep(random.uniform(1, 3))  # Additional delay between pages
             
             handler.start_company_flow()
         else:
             handler.start_company_flow()
+
+            
     except Exception as e:
         print(f"Failed to scrape {cities_url}: {str(e)}")
+
+
+def google_runner(scraper):
+    # base_url = os.environ["GGLE_BASE_URL"]
+    base_url = os.environ["BL_BASE_URL"]
+    handler = BLFlowHandler(base_url=base_url)
+
+    try:
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        files_dir = os.path.join(current_dir, "files")
+        file_path = os.path.join(files_dir, "cities.json")
+        states_file_path = os.path.join(files_dir, "city_state.json")
+
+        if not os.path.exists(file_path):
+            print(f"Cities file not found")
+            bl_base_url = os.environ["BL_BASE_URL"]
+            cities_url = f"{bl_base_url}/browse-business-cities"
+            response = scraper.get(cities_url)
+            print(f"Successfully scraped {cities_url}")
+            extractor =  BLDataExtractor(html_content=response.content, base_url=base_url)
+            extractor.extract_cities()
+            sleep(random.uniform(1, 3))  # Additional delay between pages
+
+            file_path = os.path.join(files_dir, "cities.json")
+            with open(file_path) as f:
+                cities = json.load(f)
+
+            with open(states_file_path) as f:
+                states = json.load(f)
+            
+            all_cities = list(cities.keys())
+            for city in all_cities:
+                query = f"companies in {city}"
+                companies = initiator(query)
+                if len(companies)>0:
+                    for company in companies:
+                        updated_company_data = handler._organise_company_data(company, city, states)
+                        status = handler.company_inserter.add_document(updated_company_data)
+                sleep(3)
+                
+        else:
+            with open(file_path) as f:
+                cities = json.load(f)
+            
+            with open(states_file_path) as f:
+                states = json.load(f)
+            
+            all_cities = list(cities.keys())
+            for city in all_cities:
+                query = f"companies in {city}"
+                companies = initiator(query)
+                if len(companies)>0:
+                    for company in companies:
+                        updated_company_data = handler._organise_company_data(company, city, states)
+                        status = handler.company_inserter.add_document(updated_company_data)
+                sleep(3)
         
+        # flush buffer for any remains
+        handler.company_inserter.flush_buffer()
+
+        #close all open connections
+        handler.company_inserter.close_connection()
+        handler.location_inserter.close_connection()
+        handler.industry_inserter.close_connection()
+
+    except Exception as e:
+        pass
+
+if __name__ == "__main__":
+    try:
+        scraper = EntityScraper(base_delay=3, max_delay=7)
+        # bl_runner(scraper)
+        google_runner(scraper)
+    except:
+        print("scraper failed")
+        pass
+    
