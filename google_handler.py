@@ -85,29 +85,35 @@ def extract_coordinates(url):
 
 def scroll_to_bottom(driver, city):
 
-    # divSideBar = driver.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]')
-    # divSideBar = driver.find_element(By.XPATH, f'//div[@aria-label="Results for companies in {city}"]')
-    
-    divSideBar = WebDriverWait(driver, 20).until(
-        EC.presence_of_element_located((
-            By.XPATH, 
-            f'//div[contains(@role, "feed")]'
-    )))
-    print(f"divSideBar gotten")
-    
-    # Scroll multiple times
-    last_height = driver.execute_script("return document.body.scrollHeight")
-    for i in range(100):
+    try:
+        # divSideBar = driver.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]')
+        # divSideBar = driver.find_element(By.XPATH, f'//div[@aria-label="Results for companies in {city}"]')
+        
+        divSideBar = WebDriverWait(driver, 20).until(
+            EC.presence_of_element_located((
+                By.XPATH, 
+                f'//div[contains(@role, "feed")]'
+        )))
+        print(f"divSideBar gotten")
+        
+        # Scroll multiple times
+        last_height = driver.execute_script("return document.body.scrollHeight")
+        for i in range(100):
 
-        driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight;", divSideBar)
-        
-        # Random delay between 5 and 7 seconds
-        time.sleep(random.uniform(5, 7))
-        new_height = driver.execute_script("return arguments[0].scrollHeight;", divSideBar)
-        if last_height == new_height:
-            break
-        
-        last_height = new_height
+            driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight;", divSideBar)
+            
+            # Random delay between 5 and 7 seconds
+            time.sleep(random.uniform(5, 7))
+            new_height = driver.execute_script("return arguments[0].scrollHeight;", divSideBar)
+            if last_height == new_height:
+                break
+            
+            last_height = new_height
+    except Exception as e:
+        print(f"Scrolling failed: {e}")
+        # Dump HTML for debugging
+        with open("scroll_error.html", "w", encoding="utf-8") as f:
+            f.write(driver.page_source)
 
 
 
