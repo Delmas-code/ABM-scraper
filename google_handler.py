@@ -90,8 +90,28 @@ def scroll_to_bottom(driver, city):
     try:
         # divSideBar = driver.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]')
         # divSideBar = driver.find_element(By.XPATH, f'//div[@aria-label="Results for companies in {city}"]')
+        try:
+            try:
+                reject_ggle_btn = WebDriverWait(driver, 7).until(
+                    EC.element_to_be_clickable((By.XPATH, f'//div[contains(@aria-label, "Avvisa alla")]'))
+                    
+                )
+            except Exception as e:
+                reject_ggle_btn = WebDriverWait(driver, 7).until(
+                    EC.element_to_be_clickable((By.XPATH, f'//div[contains(@aria-label, "Reject all")]'))
+                    
+                )
+            
+            reject_ggle_btn.click()
+            print("Clicked reject btn")
+
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, '//div[contains(@role, "feed")]'))
+            )
+        except Exception as e:
+            pass
         
-        divSideBar = WebDriverWait(driver, 20).until(
+        divSideBar = WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((
                 By.XPATH, 
                 f'//div[contains(@role, "feed")]'
