@@ -14,37 +14,38 @@ import re
 # Configure Selenium WebDriver (e.g., Chrome)
 def setup_driver():
 
-    """
-        options = webdriver.ChromeOptions()
-    
-        options.add_argument('--headless')  # Run in headless mode (no GUI)
-        options.add_argument('--disable-gpu')
-        options.add_argument('--no-sandbox')
-        options.add_argument("--disable-dev-shm-usage")  # Avoid memory issues
-        options.add_argument("--lang=en")
-        options.add_argument('--window-size=800,600')
-        options.add_argument('--disable-extensions')
-        options.add_argument('--disable-background-networking')
-        options.add_argument('--disable-background-timer-throttling')
-        options.add_argument('--disable-backgrounding-occluded-windows')
-        options.add_argument('--disable-breakpad')
-        options.add_argument('--disable-component-update')
-        options.add_argument('--disable-domain-reliability')
-        options.add_argument('--disable-sync')
-        options.add_argument('--disable-features=AudioServiceOutOfProcess')
-        options.add_argument('--disable-hang-monitor')
-        options.add_argument('--disable-ipc-flooding-protection')
-        options.add_argument('--disable-popup-blocking')
-        options.add_argument('--disable-prompt-on-repost')
-        options.add_argument('--disable-renderer-backgrounding')
-        options.add_argument('--disable-default-apps')
-        options.add_argument('--metrics-recording-only')
-        options.add_argument('--no-first-run')
-        options.add_argument('--safebrowsing-disable-auto-update')
-        options.add_argument('--enable-automation')
-        options.add_argument('--password-store=basic')
-        options.add_argument('--use-mock-keychain')
-        # options.add_argument('--enable-unsafe-swiftshader')"
+
+    options = webdriver.ChromeOptions()
+
+    options.add_argument('--headless')  # Run in headless mode (no GUI)
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
+    options.add_argument("--disable-dev-shm-usage")  # Avoid memory issues
+    options.add_argument("--lang=en")
+    options.add_argument('--window-size=800,600')
+    options.add_argument('--disable-extensions')
+    options.add_argument('--disable-background-networking')
+    options.add_argument('--disable-background-timer-throttling')
+    options.add_argument('--disable-backgrounding-occluded-windows')
+    options.add_argument('--disable-breakpad')
+    options.add_argument('--disable-component-update')
+    options.add_argument('--disable-domain-reliability')
+    options.add_argument('--disable-sync')
+    options.add_argument('--disable-features=AudioServiceOutOfProcess')
+    options.add_argument('--disable-hang-monitor')
+    options.add_argument('--disable-ipc-flooding-protection')
+    options.add_argument('--disable-popup-blocking')
+    options.add_argument('--disable-prompt-on-repost')
+    options.add_argument('--disable-renderer-backgrounding')
+    options.add_argument('--disable-default-apps')
+    options.add_argument('--metrics-recording-only')
+    options.add_argument('--no-first-run')
+    options.add_argument("--disable-notifications")
+    options.add_argument('--safebrowsing-disable-auto-update')
+    options.add_argument('--enable-automation')
+    options.add_argument('--password-store=basic')
+    options.add_argument('--use-mock-keychain')
+    # options.add_argument('--enable-unsafe-swiftshader')"
     """
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')  
@@ -52,6 +53,7 @@ def setup_driver():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--window-size=1280,1024')
+    """
     
     print("[INFO] Starting ChromeDriver...")
 
