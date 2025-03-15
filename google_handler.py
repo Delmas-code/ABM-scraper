@@ -14,22 +14,6 @@ import re
 # Configure Selenium WebDriver (e.g., Chrome)
 def setup_driver():
 
-    # Install Chrome and ChromeDriver on the server (if not already installed)
-    # if not os.path.exists("/usr/bin/google-chrome"):
-    #     print("Installing Google Chrome...")
-    #     os.system("wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -")
-    #     os.system('echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list')
-    #     os.system("sudo apt-get update -y")
-    #     os.system("sudo apt-get install -y google-chrome-stable")
-
-    # if not os.path.exists("/usr/local/bin/chromedriver"):
-    #     print("Installing ChromeDriver...")
-    #     os.system("sudo apt-get install -y unzip")  # Ensure unzip is installed
-    #     os.system("wget -q https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip")  # Replace with the latest version
-    #     os.system("unzip chromedriver_linux64.zip")
-    #     os.system("sudo mv chromedriver /usr/local/bin/")
-    #     os.system("sudo chmod +x /usr/local/bin/chromedriver")
-
     """
         options = webdriver.ChromeOptions()
     
@@ -69,10 +53,12 @@ def setup_driver():
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--window-size=1280,1024')
     
+    print("[INFO] Starting ChromeDriver...")
 
     # Set up ChromeDriver service
     service = Service(executable_path="/usr/bin/chromedriver", log_output="selenium.log")
     driver = webdriver.Chrome(service=service, options=options)
+    print("[INFO] ChromeDriver started successfully!")
     return driver
 
 def extract_coordinates(url):
@@ -271,6 +257,7 @@ def initiator(search_query, city):
     url = f"https://www.google.com/maps/search/{search_query.replace(' ', '+')}"
 
     driver = setup_driver()
+    print("Gotten Initiator driver")
     driver.get(url)
 
     # Wait for the page to load
