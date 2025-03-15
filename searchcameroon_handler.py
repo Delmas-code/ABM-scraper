@@ -184,7 +184,7 @@ def main():
     driver = webdriver.Chrome(service=service, options=chrome_options)
     
     all_companies = []
-    page_number = 8
+    page_number = 1
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
     files_dir = os.path.join(current_dir, "files")
