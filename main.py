@@ -538,7 +538,7 @@ if __name__ == "__main__":
         scraper = EntityScraper(base_delay=3, max_delay=7)
         # bl_runner(scraper)
         google_runner(scraper)
-    except:
-        print("scraper failed")
-        pass
+    except Exception as e:
+        print(f"scraper failed: {e}")
+        
     

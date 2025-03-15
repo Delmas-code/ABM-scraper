@@ -60,8 +60,8 @@ def setup_driver():
     options.add_argument('--use-mock-keychain')
 
     # Set up ChromeDriver service
-    service = Service(executable_path="/usr/bin/chromedriver")
-    
+    service = Service(executable_path="/usr/bin/chromedriver/chromedriver")
+   
     driver = webdriver.Chrome(service=service, options=options)
     return driver
 
