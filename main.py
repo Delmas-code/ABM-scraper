@@ -439,8 +439,8 @@ def  bl_runner(scraper):
 
 
 def google_runner(scraper):
-    # base_url = os.environ["GGLE_BASE_URL"]
-    base_url = os.environ["BL_BASE_URL"]
+    base_url = os.environ["GGLE_BASE_URL"]
+    # base_url = os.environ["BL_BASE_URL"]
     handler = BLFlowHandler(base_url=base_url)
 
     try:
@@ -467,6 +467,10 @@ def google_runner(scraper):
             with open(states_file_path) as f:
                 states = json.load(f)
             
+            scrapped_cities_file_path = os.path.join(files_dir, "scrapped_cities.json")
+            with open(scrapped_cities_file_path) as f:
+                scrapped_cities = json.load(f)
+            
             all_cities = list(cities.keys())
             for city in all_cities:
                 query = f"companies in {city}"
@@ -475,6 +479,13 @@ def google_runner(scraper):
                     for company in companies:
                         updated_company_data = handler._organise_company_data(company, city, states)
                         status = handler.company_inserter.add_document(updated_company_data)
+
+                        scrapped_cities[city] = query
+                        file_path = os.path.join(files_dir, "scrapped_cities.json")
+                        with open(file_path, 'w') as f:
+                            json.dump(scrapped_cities, f, indent=4)
+
+                print(f"DONE WITH {city}!!")
                         
                 sleep(3)
                 
@@ -485,6 +496,10 @@ def google_runner(scraper):
             
             with open(states_file_path) as f:
                 states = json.load(f)
+
+            scrapped_cities_file_path = os.path.join(files_dir, "scrapped_cities.json")
+            with open(scrapped_cities_file_path) as f:
+                scrapped_cities = json.load(f)
             
             all_cities = list(cities.keys())
             for city in all_cities:
@@ -493,8 +508,18 @@ def google_runner(scraper):
                 if len(companies)>0:
                     for company in companies:
                         updated_company_data = handler._organise_company_data(company, city, states)
+                        print(f"\n{updated_company_data}\n")
                         status = handler.company_inserter.add_document(updated_company_data)
+
+                        scrapped_cities[city] = query
+                        file_path = os.path.join(files_dir, "scrapped_cities.json")
+                        with open(file_path, 'w') as f:
+                            json.dump(scrapped_cities, f, indent=4)
+
+                print(f"DONE WITH {city}!!")
+
                 sleep(3)
+                # break #just run once for now
         
         # flush buffer for any remains
         handler.company_inserter.flush_buffer()

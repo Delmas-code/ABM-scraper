@@ -60,7 +60,8 @@ def setup_driver():
     options.add_argument('--use-mock-keychain')
 
     # Set up ChromeDriver service
-    service = Service(executable_path="/usr/local/bin/chromedriver")
+    service = Service(executable_path="/usr/bin/chromedriver")
+    
     driver = webdriver.Chrome(service=service, options=options)
     return driver
 
@@ -92,7 +93,7 @@ def scroll_to_bottom(driver):
     
     # Scroll multiple times
     last_height = driver.execute_script("return document.body.scrollHeight")
-    for i in range(100):
+    for i in range(2):
 
         driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight;", divSideBar)
         
@@ -108,123 +109,124 @@ def scroll_to_bottom(driver):
 
 # Scrape company information from the page
 def scrape_company_info(driver, town):
-    
+
     companies = []
     town = town.capitalize()
+    try:
+        company_parent = driver.find_element(By.XPATH,  '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]')
+        company_parent_soup = BeautifulSoup(company_parent.get_attribute('outerHTML'), 'lxml')
 
-    company_parent = driver.find_element(By.XPATH,  '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]')
-    company_parent_soup = BeautifulSoup(company_parent.get_attribute('outerHTML'), 'lxml')
-
-    company_cards = company_parent_soup.find_all("a", {"aria-label": True})
-    
-    for company in company_cards:
-
-        #open company card
-        company_url = company.get("href")
+        company_cards = company_parent_soup.find_all("a", {"aria-label": True})
         
-        if "https://www.google.com/maps/place/" in company_url:
-            print(f"GETTING: {company_url}")
-            company_driver = setup_driver()
-            company_driver.get(company_url)
+        for company in company_cards:
 
-            name_element = WebDriverWait(company_driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div/div[1]/div[1]/h1'))
-            )
-            name = name_element.text if name_element else None
+            #open company card
+            company_url = company.get("href")
             
-            category_element = WebDriverWait(company_driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/span/span/button'))
-            )
-            category = category_element.text if category_element else None
+            if "https://www.google.com/maps/place/" in company_url:
+                print(f"GETTING: {company_url}")
+                company_driver = setup_driver()
+                company_driver.get(company_url)
 
-            info_card = company_driver.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[7]')
-            info_card_soup = BeautifulSoup(info_card.get_attribute('outerHTML'), 'lxml')
-            print(f"\ninfo_card_soup: {info_card_soup}\n")
-            
-
-            try:
-                #try with soup
-                address = info_card_soup.find(
-                    "button", 
-                    attrs={"aria-label": lambda x: x and "Address:" in x}
+                name_element = WebDriverWait(company_driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div/div[1]/div[1]/h1'))
                 )
+                name = name_element.text if name_element else None
+                
+                category_element = WebDriverWait(company_driver, 10).until(
+                    EC.presence_of_element_located((By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/span/span/button'))
+                )
+                category = category_element.text if category_element else None
 
-                if address:
-                    address = address.get("aria-label")
-                    address = address.replace("Address: ", "").replace(f", {town}", "").strip()
-                else:
+                info_card = company_driver.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[7]')
+                info_card_soup = BeautifulSoup(info_card.get_attribute('outerHTML'), 'lxml')
+                # print(f"\ninfo_card_soup: {info_card_soup}\n")
+                
+
+                try:
+                    #try with soup
                     address = info_card_soup.find(
                         "button", 
-                        attrs={"aria-label": lambda x: x and "Adresse:" in x}
+                        attrs={"aria-label": lambda x: x and "Address:" in x}
                     )
+
                     if address:
                         address = address.get("aria-label")
-                        address = address.replace("Adresse: ", "").replace(f", {town}", "").strip()
+                        address = address.replace("Address: ", "").replace(f", {town}", "").strip()
                     else:
-                        address = None
-            except:
-                address = None
-            
-            try:
-                website = info_card_soup.find(
-                    "a", 
-                    attrs={"aria-label": lambda x: x and "Website:" in x}
-                )
-                if website:
-                    website = website.get("href")
-                else:
+                        address = info_card_soup.find(
+                            "button", 
+                            attrs={"aria-label": lambda x: x and "Adresse:" in x}
+                        )
+                        if address:
+                            address = address.get("aria-label")
+                            address = address.replace("Adresse: ", "").replace(f", {town}", "").strip()
+                        else:
+                            address = None
+                except:
+                    address = None
+                
+                try:
                     website = info_card_soup.find(
                         "a", 
-                        attrs={"aria-label": lambda x: x and "Site Web:" in x}
+                        attrs={"aria-label": lambda x: x and "Website:" in x}
                     )
                     if website:
                         website = website.get("href")
                     else:
-                        website =None
-            except:
-                website = None
+                        website = info_card_soup.find(
+                            "a", 
+                            attrs={"aria-label": lambda x: x and "Site Web:" in x}
+                        )
+                        if website:
+                            website = website.get("href")
+                        else:
+                            website =None
+                except:
+                    website = None
 
-            try:
-                phone = info_card_soup.find(
-                    "button", 
-                    attrs={"aria-label": lambda x: x and "Phone:" in x}
-                )
-                
-                if phone:
-                    phone = phone.get("aria-label")
-                    phone = phone.replace("Phone: ", "").strip()
-                else:
+                try:
                     phone = info_card_soup.find(
                         "button", 
-                        attrs={"aria-label": lambda x: x and "Numéro de téléphone:" in x}
+                        attrs={"aria-label": lambda x: x and "Phone:" in x}
                     )
+                    
                     if phone:
                         phone = phone.get("aria-label")
-                        phone = phone.replace("Numéro de téléphone: ", "").strip()
+                        phone = phone.replace("Phone: ", "").strip()
                     else:
-                        phone = None
+                        phone = info_card_soup.find(
+                            "button", 
+                            attrs={"aria-label": lambda x: x and "Numéro de téléphone:" in x}
+                        )
+                        if phone:
+                            phone = phone.get("aria-label")
+                            phone = phone.replace("Numéro de téléphone: ", "").strip()
+                        else:
+                            phone = None
+                    
+                except:
+                    phone =  None
+
+                latitude, longitude = extract_coordinates(company_url)
+
+                company_info=  {
+                    'name': name,
+                    'address': address,
+                    'contact_numbers': [phone],
+                    'website': website,
+                    'size': "",
+                    'tags': "",
+                    'description': category,
+                    'latitude': latitude,
+                    'longitude': longitude
+                }
+                company_driver.quit()
+                companies.append(company_info)
                 
-            except:
-                phone =  None
-
-            latitude, longitude = extract_coordinates(company_url)
-
-            company_info=  {
-                'name': name,
-                'address': address,
-                'contact_numbers': [phone],
-                'website': website,
-                'size': "",
-                'tags': "",
-                'description': category,
-                'latitude': latitude,
-                'longitude': longitude
-            }
-            company_driver.quit()
-            companies.append(company_info)
-            
-            time.sleep(random.uniform(3, 5))
-        
+                time.sleep(random.uniform(3, 5))
+    except:
+        pass    
         
     return companies
 
