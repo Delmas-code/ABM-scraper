@@ -30,8 +30,9 @@ def setup_driver():
     #     os.system("sudo mv chromedriver /usr/local/bin/")
     #     os.system("sudo chmod +x /usr/local/bin/chromedriver")
 
-    options = webdriver.ChromeOptions()
     """
+        options = webdriver.ChromeOptions()
+    
         options.add_argument('--headless')  # Run in headless mode (no GUI)
         options.add_argument('--disable-gpu')
         options.add_argument('--no-sandbox')
@@ -61,7 +62,6 @@ def setup_driver():
         options.add_argument('--use-mock-keychain')
         # options.add_argument('--enable-unsafe-swiftshader')"
     """
-
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')  
     options.add_argument('--disable-gpu')
@@ -71,7 +71,7 @@ def setup_driver():
     
 
     # Set up ChromeDriver service
-    service = Service(executable_path="/usr/bin/chromedriver")
+    service = Service(executable_path="/usr/bin/chromedriver", log_output="selenium.log")
     driver = webdriver.Chrome(service=service, options=options)
     return driver
 
