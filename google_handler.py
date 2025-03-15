@@ -58,12 +58,11 @@ def setup_driver():
     options.add_argument('--enable-automation')
     options.add_argument('--password-store=basic')
     options.add_argument('--use-mock-keychain')
-    options.add_argument('--enable-unsafe-swiftshader')
+    # options.add_argument('--enable-unsafe-swiftshader')
     
 
     # Set up ChromeDriver service
     service = Service(executable_path="/usr/bin/chromedriver/chromedriver")
-    
     driver = webdriver.Chrome(service=service, options=options)
     return driver
 
