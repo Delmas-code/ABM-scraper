@@ -97,7 +97,7 @@ def scroll_to_bottom(driver, city):
     
     # Scroll multiple times
     last_height = driver.execute_script("return document.body.scrollHeight")
-    for i in range(2):
+    for i in range(100):
 
         driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight;", divSideBar)
         
@@ -244,8 +244,8 @@ def scrape_company_info(driver, city):
                 companies.append(company_info)
                 
                 time.sleep(random.uniform(3, 5))
-                # print(company_info)
-                # print(f"\n PRINTED company_info \n")
+                print(company_info)
+                print(f"\n PRINTED company_info \n")
     except:
         pass    
         
@@ -259,14 +259,16 @@ def initiator(search_query, city):
     driver = setup_driver()
     print("Gotten Initiator driver")
     driver.get(url)
-
+    print("[INFO] URL gotten")
     # Wait for the page to load
     time.sleep(5)
 
     # Scroll to load all results
+    print("[INFO] Starting Scroll to Button Func...")
     scroll_to_bottom(driver, city)
 
     # Scrape company information
+    print("[INFO] Starting Company Scraper...")
     companies = scrape_company_info(driver, city)    
     
     # Close the driver
