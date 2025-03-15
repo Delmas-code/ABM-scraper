@@ -58,10 +58,12 @@ def setup_driver():
     options.add_argument('--enable-automation')
     options.add_argument('--password-store=basic')
     options.add_argument('--use-mock-keychain')
+    options.add_argument('--enable-unsafe-swiftshader')
+    
 
     # Set up ChromeDriver service
     service = Service(executable_path="/usr/bin/chromedriver/chromedriver")
-   
+    
     driver = webdriver.Chrome(service=service, options=options)
     return driver
 
@@ -87,9 +89,17 @@ def extract_coordinates(url):
 # Scroll to the bottom of the page to load more results
 
 
-def scroll_to_bottom(driver):
+def scroll_to_bottom(driver, city):
 
-    divSideBar = driver.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]')
+    # divSideBar = driver.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]')
+    # divSideBar = driver.find_element(By.XPATH, f'//div[@aria-label="Results for companies in {city}"]')
+    
+    divSideBar = WebDriverWait(driver, 20).until(
+        EC.presence_of_element_located((
+            By.XPATH, 
+            f'//div[contains(@role, "feed")]'
+    )))
+    print(f"divSideBar gotten")
     
     # Scroll multiple times
     last_height = driver.execute_script("return document.body.scrollHeight")
@@ -108,12 +118,20 @@ def scroll_to_bottom(driver):
 
 
 # Scrape company information from the page
-def scrape_company_info(driver, town):
+def scrape_company_info(driver, city):
 
     companies = []
-    town = town.capitalize()
+    city = city.capitalize()
     try:
-        company_parent = driver.find_element(By.XPATH,  '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]')
+        # company_parent = driver.find_element(By.XPATH,  '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]')
+        # company_parent_child = driver.find_element(By.XPATH, f'//div[contains(@aria-label, "Results for companies in {city}")]')
+        
+        company_parent_child = WebDriverWait(driver, 20).until(
+            EC.presence_of_element_located((
+                By.XPATH, 
+                f'//div[contains(@role, "feed")]'
+            )))
+        company_parent = company_parent_child.find_element(By.XPATH, './parent::div')
         company_parent_soup = BeautifulSoup(company_parent.get_attribute('outerHTML'), 'lxml')
 
         company_cards = company_parent_soup.find_all("a", {"aria-label": True})
@@ -128,17 +146,24 @@ def scrape_company_info(driver, town):
                 company_driver = setup_driver()
                 company_driver.get(company_url)
 
+                # name_element = WebDriverWait(company_driver, 10).until(
+                #     EC.presence_of_element_located((By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div/div[1]/div[1]/h1'))
+                # )
                 name_element = WebDriverWait(company_driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div/div[1]/div[1]/h1'))
+                    EC.presence_of_element_located((By.XPATH, f'//div[contains(@role, "main")]/div[2]/div/div[1]/div[1]/h1'))
                 )
                 name = name_element.text if name_element else None
                 
+                # category_element = WebDriverWait(company_driver, 10).until(
+                #     EC.presence_of_element_located((By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/span/span/button'))
+                # )
                 category_element = WebDriverWait(company_driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/span/span/button'))
+                    EC.presence_of_element_located((By.XPATH, f'//div[contains(@role, "main")]/div[2]/div/div[1]/div[2]/div/div[2]/span/span/button'))
                 )
                 category = category_element.text if category_element else None
 
-                info_card = company_driver.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[7]')
+                # info_card = company_driver.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[7]')
+                info_card = company_driver.find_element(By.XPATH, '//div[contains(@role, "main")]/div[7]')
                 info_card_soup = BeautifulSoup(info_card.get_attribute('outerHTML'), 'lxml')
                 # print(f"\ninfo_card_soup: {info_card_soup}\n")
                 
@@ -152,7 +177,7 @@ def scrape_company_info(driver, town):
 
                     if address:
                         address = address.get("aria-label")
-                        address = address.replace("Address: ", "").replace(f", {town}", "").strip()
+                        address = address.replace("Address: ", "").replace(f", {city}", "").strip()
                     else:
                         address = info_card_soup.find(
                             "button", 
@@ -160,7 +185,7 @@ def scrape_company_info(driver, town):
                         )
                         if address:
                             address = address.get("aria-label")
-                            address = address.replace("Adresse: ", "").replace(f", {town}", "").strip()
+                            address = address.replace("Adresse: ", "").replace(f", {city}", "").strip()
                         else:
                             address = None
                 except:
@@ -225,13 +250,15 @@ def scrape_company_info(driver, town):
                 companies.append(company_info)
                 
                 time.sleep(random.uniform(3, 5))
+                # print(company_info)
+                # print(f"\n PRINTED company_info \n")
     except:
         pass    
         
     return companies
 
 # Main function
-def initiator(search_query, town):
+def initiator(search_query, city):
     # search_query = "companies in yaounde"
     url = f"https://www.google.com/maps/search/{search_query.replace(' ', '+')}"
 
@@ -242,10 +269,10 @@ def initiator(search_query, town):
     time.sleep(5)
 
     # Scroll to load all results
-    scroll_to_bottom(driver)
+    scroll_to_bottom(driver, city)
 
     # Scrape company information
-    companies = scrape_company_info(driver, town)    
+    companies = scrape_company_info(driver, city)    
     
     # Close the driver
     driver.quit()

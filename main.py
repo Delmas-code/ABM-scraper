@@ -477,6 +477,7 @@ def google_runner(scraper):
                 companies = initiator(query, city)
                 if len(companies)>0:
                     for company in companies:
+                        # print(company)
                         updated_company_data = handler._organise_company_data(company, city, states)
                         status = handler.company_inserter.add_document(updated_company_data)
 
@@ -507,6 +508,7 @@ def google_runner(scraper):
                 companies = initiator(query, city)
                 if len(companies)>0:
                     for company in companies:
+                        # print(company)
                         updated_company_data = handler._organise_company_data(company, city, states)
                         print(f"\n{updated_company_data}\n")
                         status = handler.company_inserter.add_document(updated_company_data)
