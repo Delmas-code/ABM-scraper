@@ -278,6 +278,7 @@ class BLFlowHandler:
         self.industry_maps = IndustryClassifier()
 
         #configure connection for company bulk inserter
+        """
         self.company_inserter = MongoDataHandler(
             connection_string= os.environ["CONN_STRING"],
             database_name= os.environ["DB_NAME"],
@@ -285,6 +286,7 @@ class BLFlowHandler:
             buffer_size=100,  # Will insert after 100 documents
             max_wait_time=300  # Or after 300 seconds, whichever comes first
         )
+        """
 
         #configure connection for inserting in location collection
         self.location_inserter = MongoDataHandler(
@@ -356,7 +358,7 @@ class BLFlowHandler:
 
             if company_data:
                 updated_company_data = self._organise_company_data(company_data, city, states)
-                status = self.company_inserter.add_document(updated_company_data)
+                # status = self.company_inserter.add_document(updated_company_data)
         return next_page_link
 
 
@@ -397,14 +399,14 @@ class BLFlowHandler:
             self.logger.info(f"DONE SCRAPPING ALL CITIES IN `cities.json`!!")
 
             # flush buffer for any remains
-            self.company_inserter.flush_buffer()
+            # self.company_inserter.flush_buffer()
 
             #close all open connections
-            self.company_inserter.close_connection()
+            # self.company_inserter.close_connection()
             self.location_inserter.close_connection()
             self.industry_inserter.close_connection()
 
-            print(f"BUFFER: {self.company_inserter.buffer}\n")
+            # print(f"BUFFER: {self.company_inserter.buffer}\n")
 
         except Exception as e:
             self.logger.error(f"Error Occured in Flow: {str(e)}")
@@ -545,10 +547,10 @@ def google_runner(scraper):
                 # break #just run once for now
         
         # flush buffer for any remains
-        handler.company_inserter.flush_buffer()
+        # handler.company_inserter.flush_buffer()
 
         #close all open connections
-        handler.company_inserter.close_connection()
+        # handler.company_inserter.close_connection()
         handler.location_inserter.close_connection()
         handler.industry_inserter.close_connection()
 

@@ -308,10 +308,13 @@ def set_company_connection(state="close", company_conn_str=None):
             collection_name= os.environ["COMPANY_COLLECTION"]
         )
         return company_conn_str
-    elif str(state).lower() == "close":
+    elif str(state).lower() == "close" and company_conn_str is not None:
         company_conn_str.close_connection()
         print("company_conn_str has closed")
         return True
+    else:
+        print(f"company_conn_str is {company_conn_str}!!")
+        return False
 
 def insert_company(company_conn_str, company_data):
 
