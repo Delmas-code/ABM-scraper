@@ -90,6 +90,7 @@ def extract_coordinates(url):
 def scroll_to_bottom(driver, city):
 
     try:
+        print("[INFO] In scroll_to_bottom")
         # divSideBar = driver.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]')
         # divSideBar = driver.find_element(By.XPATH, f'//div[@aria-label="Results for companies in {city}"]')
         try:
