@@ -54,6 +54,7 @@ def setup_driver():
     # options.add_argument('--enable-unsafe-swiftshader')"
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')  
+    options.add_argument("--lang=en")
     options.add_argument('--disable-gpu')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
