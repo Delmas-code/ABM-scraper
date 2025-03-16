@@ -16,7 +16,10 @@ chrome_options.add_argument("--disable-notifications")
 service = Service("/usr/bin/chromedriver") 
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
-driver.get("https://www.google.com")
+# driver.get("https://www.google.com")
+url = f"https://www.google.com/maps/search/companies+in+lagos"
+driver.get(url)
+
 print("Title: ", driver.title)
 try:
     print("In Try")
