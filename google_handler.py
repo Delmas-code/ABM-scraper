@@ -45,6 +45,8 @@ def setup_driver():
     options.add_argument('--enable-automation')
     options.add_argument('--password-store=basic')
     options.add_argument('--use-mock-keychain')
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.88 Safari/537.36")
+
     # options.add_argument('--enable-unsafe-swiftshader')"
     """
     options = webdriver.ChromeOptions()
