@@ -93,7 +93,7 @@ def scroll_to_bottom(driver, city):
         print("[INFO] In scroll_to_bottom")
         # divSideBar = driver.find_element(By.XPATH, '//*[@id="QA0Szd"]/div/div/div[1]/div[2]/div/div[1]/div/div/div[1]/div[1]')
         # divSideBar = driver.find_element(By.XPATH, f'//div[@aria-label="Results for companies in {city}"]')
-        """
+        
         try:
             try:
                 reject_ggle_btn = WebDriverWait(driver, 7).until(
@@ -114,7 +114,7 @@ def scroll_to_bottom(driver, city):
             )
         except Exception as e:
             pass
-        """
+        
         
         divSideBar = WebDriverWait(driver, 15).until(
             EC.presence_of_element_located((

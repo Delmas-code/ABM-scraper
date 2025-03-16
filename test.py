@@ -1,3 +1,4 @@
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -40,4 +41,6 @@ except Exception as e:
 
 reject_ggle_btn.click()
 print("Shouldve Clicked reject btn")
+time.sleep(2)
+print("New Title: ", driver.title)
 driver.quit()
