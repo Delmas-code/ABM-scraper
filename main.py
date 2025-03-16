@@ -474,7 +474,16 @@ def google_runner(scraper):
             all_cities = list(cities.keys())
             for city in all_cities:
                 query = f"companies in {city}"
-                companies = initiator(query, city)
+                file_path = os.path.join(files_dir, "scrapped_cities.json")
+                scrapped_cities[city] = query
+                result_status = initiator(query, city, handler, states, file_path, scrapped_cities)
+
+                if result_status:
+                    print(f"DONE WITH {city}!!")
+                else:
+                    print(f"FAILED TO COMPLETE {city}!!")
+
+                """
                 if len(companies)>0:
                     for company in companies:
                         # print(company)
@@ -485,10 +494,12 @@ def google_runner(scraper):
                         file_path = os.path.join(files_dir, "scrapped_cities.json")
                         with open(file_path, 'w') as f:
                             json.dump(scrapped_cities, f, indent=4)
+                """
 
-                print(f"DONE WITH {city}!!")
+                # print(f"DONE WITH {city}!!")
                         
                 sleep(3)
+                # break #just run once for now
                 
         else:
             print("Cities file found")
@@ -505,7 +516,16 @@ def google_runner(scraper):
             all_cities = list(cities.keys())
             for city in all_cities:
                 query = f"companies in {city}"
-                companies = initiator(query, city)
+                file_path = os.path.join(files_dir, "scrapped_cities.json")
+                scrapped_cities[city] = query
+                result_status = initiator(query, city, handler, states, file_path, scrapped_cities)
+
+                if result_status:
+                    print(f"DONE WITH {city}!!")
+                else:
+                    print(f"FAILED TO COMPLETE {city}!!")
+
+                """
                 if len(companies)>0:
                     for company in companies:
                         # print(company)
@@ -517,8 +537,9 @@ def google_runner(scraper):
                         file_path = os.path.join(files_dir, "scrapped_cities.json")
                         with open(file_path, 'w') as f:
                             json.dump(scrapped_cities, f, indent=4)
+                """
 
-                print(f"DONE WITH {city}!!")
+                # print(f"DONE WITH {city}!!")
 
                 sleep(3)
                 # break #just run once for now

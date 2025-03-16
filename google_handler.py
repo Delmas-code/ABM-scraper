@@ -1,4 +1,5 @@
 import os
+import json
 import time
 import random
 from selenium import webdriver
@@ -8,13 +9,16 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from database import MongoDataHandler
+
+
 from bs4 import BeautifulSoup
 import re
 
 # Configure Selenium WebDriver (e.g., Chrome)
 def setup_driver():
 
-
+    """
     options = webdriver.ChromeOptions()
 
     options.add_argument('--headless')  # Run in headless mode (no GUI)
@@ -46,21 +50,26 @@ def setup_driver():
     options.add_argument('--password-store=basic')
     options.add_argument('--use-mock-keychain')
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.88 Safari/537.36")
-
-    # options.add_argument('--enable-unsafe-swiftshader')"
     """
+    # options.add_argument('--enable-unsafe-swiftshader')"
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')  
     options.add_argument('--disable-gpu')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--window-size=1280,1024')
-    """
+    options.add_argument('--no-first-run')
+    options.add_argument('--disable-extensions')
+    options.add_argument("--disable-notifications")
+    options.add_argument('--safebrowsing-disable-auto-update')
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.88 Safari/537.36")
+
     
     print("[INFO] Starting ChromeDriver...")
 
     # Set up ChromeDriver service
     service = Service(executable_path="/usr/bin/chromedriver", log_output="selenium.log")
+    # service = Service(executable_path="C:/Users/User/Desktop/Ongoing Project/Instanvi/repo/ABM-scraper/chromedriver/chromedriver.exe")
     driver = webdriver.Chrome(service=service, options=options)
     print("[INFO] ChromeDriver started successfully!")
     return driver
@@ -145,7 +154,7 @@ def scroll_to_bottom(driver, city):
 
 
 # Scrape company information from the page
-def scrape_company_info(driver, city):
+def scrape_company_info(company_conn_str, driver, city, handler, states, file_path, scrapped_cities):
 
     companies = []
     city = city.capitalize()
@@ -274,18 +283,43 @@ def scrape_company_info(driver, city):
                     'longitude': longitude
                 }
                 company_driver.quit()
-                companies.append(company_info)
+                updated_company_data= handler._organise_company_data(company_info, city, states)
+                company_id = insert_company(company_conn_str, updated_company_data)
+                with open(file_path, 'w') as f:
+                    json.dump(scrapped_cities, f, indent=4)
+                # companies.append(company_info)#here
                 
                 time.sleep(random.uniform(3, 5))
-                print(company_info)
+                print(f"[INFO] Company Saved - Name: {updated_company_data['name']}, Id: {company_id}")
                 print(f"\n PRINTED company_info \n")
+                break
     except:
-        pass    
+        return False    
         
-    return companies
+    # return companies
+    return True
+
+def set_company_connection(state="close", company_conn_str=None):
+    if str(state).lower() == "open":
+        company_conn_str = MongoDataHandler(
+            connection_string= os.environ["CONN_STRING"],
+            database_name= os.environ["DB_NAME"],
+            collection_name= os.environ["COMPANY_COLLECTION"]
+        )
+        return company_conn_str
+    elif str(state).lower() == "close":
+        company_conn_str.close_connection()
+        print("company_conn_str has closed")
+        return True
+
+def insert_company(company_conn_str, company_data):
+
+    company_id = company_conn_str.insert_document(company_data)
+    print(f"Saved\n {company_data}\n")
+    return company_id
 
 # Main function
-def initiator(search_query, city):
+def initiator(search_query, city, handler, states, file_path, scrapped_cities):
     # search_query = "companies in yaounde"
     url = f"https://www.google.com/maps/search/{search_query.replace(' ', '+')}"
 
@@ -302,9 +336,13 @@ def initiator(search_query, city):
 
     # Scrape company information
     print("[INFO] Starting Company Scraper...")
-    companies = scrape_company_info(driver, city)    
+    # companies = scrape_company_info(driver, city, handler, states, file_path, scrapped_cities)   
+
+    company_conn_str = set_company_connection("open") 
+    result_status = scrape_company_info(company_conn_str, driver, city, handler, states, file_path, scrapped_cities)    
+    closed = set_company_connection("close", company_conn_str) 
     
     # Close the driver
     driver.quit()
 
-    return companies
+    return result_status
