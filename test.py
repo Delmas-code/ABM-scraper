@@ -20,14 +20,16 @@ driver.get("https://www.google.com")
 print("Title: ", driver.title)
 try:
     print("In Try")
-    reject_ggle_btn = WebDriverWait(driver, 7).until(
+    reject_ggle_btn = WebDriverWait(driver, 15).until(
         EC.element_to_be_clickable((By.XPATH, f'//button[contains(@aria-label, "Avvisa alla")]'))
         
     )
     print("Done with try")
 except Exception as e:
+    with open("test_scroll_error.html", "w", encoding="utf-8") as f:
+        f.write(driver.page_source)
     print("In except")
-    reject_ggle_btn = WebDriverWait(driver, 7).until(
+    reject_ggle_btn = WebDriverWait(driver, 15).until(
         EC.element_to_be_clickable((By.XPATH, f'//button[contains(@aria-label, "Reject all")]'))
         
     )
