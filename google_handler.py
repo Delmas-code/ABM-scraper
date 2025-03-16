@@ -299,7 +299,7 @@ def scrape_company_info(company_conn_str, driver, city, handler, states, file_pa
         
     # return companies
     return True
-
+"""
 def set_company_connection(state="close", company_conn_str=None):
     if str(state).lower() == "open":
         company_conn_str = MongoDataHandler(
@@ -315,6 +315,7 @@ def set_company_connection(state="close", company_conn_str=None):
     else:
         print(f"company_conn_str is {company_conn_str}!!")
         return False
+"""
 
 def insert_company(company_conn_str, company_data):
 
@@ -323,7 +324,7 @@ def insert_company(company_conn_str, company_data):
     return company_id
 
 # Main function
-def initiator(search_query, city, handler, states, file_path, scrapped_cities):
+def initiator(search_query, city, handler, states, file_path, scrapped_cities, company_conn_str):
     # search_query = "companies in yaounde"
     url = f"https://www.google.com/maps/search/{search_query.replace(' ', '+')}"
 
@@ -342,11 +343,12 @@ def initiator(search_query, city, handler, states, file_path, scrapped_cities):
     print("[INFO] Starting Company Scraper...")
     # companies = scrape_company_info(driver, city, handler, states, file_path, scrapped_cities)   
 
-    company_conn_str = set_company_connection("open") 
+    # company_conn_str = set_company_connection("open") 
     result_status = scrape_company_info(company_conn_str, driver, city, handler, states, file_path, scrapped_cities)    
-    closed = set_company_connection("close", company_conn_str) 
+    # closed = set_company_connection("close", company_conn_str) 
     
     # Close the driver
     driver.quit()
 
     return result_status
+

@@ -287,6 +287,11 @@ class BLFlowHandler:
             max_wait_time=300  # Or after 300 seconds, whichever comes first
         )
         """
+        self.new_company_inserter = MongoDataHandler(
+            connection_string= os.environ["CONN_STRING"],
+            database_name= os.environ["DB_NAME"],
+            collection_name= os.environ["COMPANY_COLLECTION"]
+        )
 
         #configure connection for inserting in location collection
         self.location_inserter = MongoDataHandler(
@@ -478,7 +483,7 @@ def google_runner(scraper):
                 query = f"companies in {city}"
                 file_path = os.path.join(files_dir, "scrapped_cities.json")
                 scrapped_cities[city] = query
-                result_status = initiator(query, city, handler, states, file_path, scrapped_cities)
+                result_status = initiator(query, city, handler, states, file_path, scrapped_cities, handler.new_company_inserter)
 
                 if result_status:
                     print(f"DONE WITH {city}!!")
@@ -520,7 +525,8 @@ def google_runner(scraper):
                 query = f"companies in {city}"
                 file_path = os.path.join(files_dir, "scrapped_cities.json")
                 scrapped_cities[city] = query
-                result_status = initiator(query, city, handler, states, file_path, scrapped_cities)
+            
+                result_status = initiator(query, city, handler, states, file_path, scrapped_cities, handler.new_company_inserter)
 
                 if result_status:
                     print(f"DONE WITH {city}!!")
@@ -551,6 +557,7 @@ def google_runner(scraper):
 
         #close all open connections
         # handler.company_inserter.close_connection()
+        handler.new_company_inserter.close_connection()
         handler.location_inserter.close_connection()
         handler.industry_inserter.close_connection()
 
